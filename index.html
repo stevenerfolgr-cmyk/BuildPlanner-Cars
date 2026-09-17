@@ -66,6 +66,9 @@ textarea{min-height:130px;resize:vertical}
 <small>Das Bild wird als Vorschau in deinem Build angezeigt.</small>
 </label>
 <img id="preview" class="preview" alt="Auto-Vorschau">
+<div id="aiHint" style="display:none;margin-top:12px;padding:14px;border:1px solid #303844;border-radius:12px;background:#0a0f15;color:#aeb8c4;font-size:14px;line-height:1.5">
+  🤖 <strong style="color:#fff">KI-Build-Idee:</strong> Dein Wunsch wird später für eine realistische Bildvorschau genutzt – z. B. größere Frontlippe, aggressives Bodykit, tiefer wirkende Seitenlinie oder anderer Heckdiffusor. Das Bild ist eine Visualisierung und nicht automatisch das exakte gekaufte Produkt.
+</div>
 </section>
 
 <section class="card">
@@ -130,46 +133,50 @@ textarea{min-height:130px;resize:vertical}
 
 <script>
 const products=[
-["Sportfedern / Tieferlegung",349,["tiefer","tieferlegen","fahrwerk"]],
-["Gewindefahrwerk",899,["tiefer","tieferlegen","fahrwerk"]],
-["Sportfahrwerk",699,["tiefer","tieferlegen","fahrwerk"]],
-["Spurverbreiterungen",159,["tiefer","rad","felgen"]],
-["Sportauspuff / Endschalldämpfer",499,["auspuff","sound","sportlich"]],
-["Klappenabgasanlage",1299,["auspuff","sound"]],
-["Sportluftfilter",89,["sound","leistung"]],
-["Ansaugung",349,["leistung"]],
-["Chiptuning / Software",499,["leistung","tuning"]],
-["Frontlippe / Frontspoiler",199,["sportlich","front","tiefer"]],
-["Heckspoiler",249,["sportlich","spoiler"]],
-["Diffusor",229,["sportlich","tiefer","heck"]],
-["Seitenschweller",399,["sportlich","tiefer","seite"]],
-["Frontstoßfänger / Bodykit-Teil",699,["sportlich","front","bodykit"]],
+["Frontlippe – aggressiver Look",249,["front","bodykit","tiefer","aggressiv","optik"]],
+["Große Frontlippe / Splitter",449,["front","bodykit","tiefer","aggressiv"]],
+["Komplettes Bodykit",1899,["bodykit","aggressiv","sportlich","front","tiefer"]],
+["Widebody-Kit",2499,["bodykit","widebody","aggressiv","rad"]],
+["Seitenschweller",399,["seite","bodykit","tiefer","aggressiv"]],
+["Heckansatz / Heckdiffusor",349,["heck","bodykit","tiefer","aggressiv"]],
+["Aggressiver Heckdiffusor",599,["heck","bodykit","sportlich"]],
+["Heckspoiler / Dachspoiler",299,["spoiler","aggressiv","sportlich"]],
+["Großer GT-Heckflügel",699,["spoiler","aggressiv"]],
+["Kühlergrill – Black Style",199,["grill","schwarz","optik"]],
+["Sportgrill / Wabengitter",299,["grill","sportlich","aggressiv"]],
 ["Schwarze Embleme",39,["schwarz","details"]],
-["LED-Seitenblinker",59,["details"]],
+["Carbon-Spiegelkappen",299,["carbon","schwarz","details"]],
+["Carbon-Motorhaube",1699,["carbon","aggressiv","optik"]],
+["Carbon-Diffusor",899,["carbon","heck","bodykit"]],
+["Scheinwerfer-Upgrade / Dark Look",499,["licht","schwarz","aggressiv"]],
+["LED-Seitenblinker",59,["details","licht"]],
 ["Scheibentönung",179,["schwarz","optik"]],
-["LED-Innenraumbeleuchtung",79,["innenraum"]],
-["Felgen-Set 17 Zoll",599,["felgen","rad","tiefer"]],
-["Felgen-Set 18 Zoll",799,["felgen","rad","tiefer"]],
-["Felgen-Set 19 Zoll",999,["felgen","rad","tiefer"]],
-["Felgen-Set 20 Zoll",1499,["felgen","rad","tiefer"]],
-["Premium-Felgen-Set",1999,["felgen","rad"]],
-["Sportbremsanlage",1499,["bremse","sportlich"]],
-["Bremsscheiben + Beläge",599,["bremse"]],
-["Carbon-Airbox",899,["leistung"]],
+["Fahrzeugfolierung",1499,["folie","optik"]],
+["Premium-Folierung",2499,["folie","optik","aggressiv"]],
+["Sportfedern / Tieferlegung",349,["tiefer","fahrwerk"]],
+["Gewindefahrwerk",899,["tiefer","fahrwerk"]],
+["Sportfahrwerk",699,["tiefer","fahrwerk"]],
+["Luftfahrwerk",2499,["tiefer","fahrwerk"]],
+["Spurverbreiterungen",159,["tiefer","rad","felgen"]],
+["Felgen-Set 17 Zoll",599,["felgen","rad"]],
+["Felgen-Set 18 Zoll",799,["felgen","rad"]],
+["Felgen-Set 19 Zoll",999,["felgen","rad"]],
+["Felgen-Set 20 Zoll",1499,["felgen","rad"]],
+["Premium-Felgen-Set",1999,["felgen","rad","aggressiv"]],
+["Sportauspuff / Endschalldämpfer",499,["auspuff","sound","sportlich"]],
+["Klappenabgasanlage",1299,["auspuff","sound","aggressiv"]],
+["Sportluftfilter",89,["leistung"]],
+["Ansaugung",349,["leistung"]],
+["Chiptuning / Software",499,["leistung"]],
 ["Ladeluftkühler",699,["leistung"]],
 ["Downpipe",599,["leistung","auspuff"]],
-["Fächerkrümmer",799,["leistung","auspuff"]],
-["Carbon-Motorhaube",1699,["carbon","sportlich"]],
-["Carbon-Dachspoiler",499,["carbon","spoiler"]],
-["Carbon-Diffusor",899,["carbon","tiefer","sportlich"]],
-["Carbon-Spiegelkappen",299,["carbon","schwarz","details"]],
-["Innenraum-Upgrade",599,["innenraum"]],
+["Sportbremsanlage",1499,["bremse","sportlich","optik"]],
+["Bremsscheiben + Beläge",599,["bremse"]],
 ["Sportsitze",1499,["innenraum","sportlich"]],
 ["Lenkrad-Sportumbau",799,["innenraum","sportlich"]],
 ["Audio-Upgrade",999,["audio","innenraum"]],
 ["Premium-Soundsystem",1999,["audio","innenraum"]],
-["Fahrzeugfolierung",1499,["folie","optik"]],
-["Premium-Folierung",2499,["folie","optik"]],
+["Innenraum-Upgrade",599,["innenraum"]],
 ["Keramikversiegelung",599,["pflege"]],
 ["Komplett-Aufbereitung",299,["pflege"]]
 ];
@@ -208,6 +215,7 @@ document.getElementById("photoInput").onchange=e=>{
   const file=e.target.files[0]; if(!file)return;
   const img=document.getElementById("preview");
   img.src=URL.createObjectURL(file); img.style.display="block";
+  document.getElementById("aiHint").style.display="block";
 };
 
 function wantedTags(text){
@@ -233,17 +241,70 @@ function scoreProduct(p,tags){
 }
 
 function chooseParts(target,text){
+  const t=text.toLowerCase();
   const tags=wantedTags(text);
-  let pool=products.slice().sort((a,b)=>scoreProduct(b,tags)-scoreProduct(a,tags));
-  const min=Math.max(0,target-90), max=target+90;
 
-  // Dynamic programming in 1-Euro-Schritten, mit Produkten höchstens einmal.
-  // Für größere Budgets wird zunächst eine sinnvolle Auswahl priorisiert.
+  // Explicit wishes get highest priority.
+  // "Tiefer aussehen" is treated as a visual-design request, not automatically
+  // as a suspension request.
+  const explicit={
+    bodykit:/bodykit|body kit|komplettkit|kit/.test(t),
+    front:/frontlippe|frontspoiler|front|splitter/.test(t),
+    heck:/heckdiffusor|diffusor|heckansatz|heck/.test(t),
+    spoiler:/spoiler|flügel|wing/.test(t),
+    tiefer:/tiefer|tief(er)? aussehen|boden|stance|radhaus/.test(t),
+    felgen:/felgen|räder/.test(t),
+    fahrwerk:/fahrwerk|federn|gewindefahrwerk|luftfahrwerk/.test(t),
+    auspuff:/auspuff|abgas|sound/.test(t),
+    leistung:/leistung|ps|power|tuning/.test(t),
+    carbon:/carbon/.test(t),
+    folie:/folie|folierung/.test(t)
+  };
+
+  let pool=products.slice();
+
+  // Strongly match the user's request first.
+  if(explicit.bodykit) pool.sort((a,b)=>(b[2].includes("bodykit")?1:0)-(a[2].includes("bodykit")?1:0));
+  else if(explicit.front) pool.sort((a,b)=>(b[2].includes("front")?1:0)-(a[2].includes("front")?1:0));
+  else if(explicit.heck) pool.sort((a,b)=>(b[2].includes("heck")?1:0)-(a[2].includes("heck")?1:0));
+  else if(explicit.spoiler) pool.sort((a,b)=>(b[2].includes("spoiler")?1:0)-(a[2].includes("spoiler")?1:0));
+  else if(explicit.fahrwerk) pool.sort((a,b)=>(b[2].includes("fahrwerk")?1:0)-(a[2].includes("fahrwerk")?1:0));
+  else if(explicit.felgen) pool.sort((a,b)=>(b[2].includes("felgen")?1:0)-(a[2].includes("felgen")?1:0));
+  else {
+    // General requests: rotate between different modification families.
+    // This prevents every generic search from becoming a "felgen build".
+    const visualFamilies=["bodykit","front","heck","spoiler","tiefer","schwarz","folie","carbon","felgen","auspuff"];
+    const seed=(text.length + target) % visualFamilies.length;
+    const preferred=visualFamilies[seed];
+    pool.sort((a,b)=>{
+      const sa=(a[2].includes(preferred)?5:0)+scoreProduct(a,tags);
+      const sb=(b[2].includes(preferred)?5:0)+scoreProduct(b,tags);
+      return sb-sa;
+    });
+  }
+
+  const min=Math.max(0,target-90), max=target+90;
   const maxUseful=Math.min(max,50000);
+
+  // Keep the selection varied: at most one item from each broad visual family
+  // before adding secondary parts.
+  const familyOf=p=>{
+    if(p[2].includes("bodykit")||p[2].includes("front")||p[2].includes("heck")) return "aero";
+    if(p[2].includes("spoiler")) return "spoiler";
+    if(p[2].includes("felgen")||p[2].includes("rad")) return "wheels";
+    if(p[2].includes("tiefer")||p[2].includes("fahrwerk")) return "suspension";
+    if(p[2].includes("auspuff")||p[2].includes("sound")) return "exhaust";
+    if(p[2].includes("leistung")) return "performance";
+    if(p[2].includes("carbon")) return "carbon";
+    if(p[2].includes("folie")) return "wrap";
+    return p[0];
+  };
+
   const dp=new Map([[0,[]]]);
   for(const p of pool){
     const next=new Map(dp);
     for(const [sum,arr] of dp){
+      if(arr.some(x=>x[0]===p[0])) continue;
       const ns=sum+p[1];
       if(ns<=maxUseful && !next.has(ns)) next.set(ns,[...arr,p]);
     }
@@ -253,23 +314,27 @@ function chooseParts(target,text){
 
   let best=null;
   for(const [sum,arr] of dp){
-    if(sum>=min && sum<=max && (!best || Math.abs(sum-target)<Math.abs(best.sum-target))) best={sum,arr};
+    if(sum<min||sum>max)continue;
+    const families=new Set(arr.map(familyOf)).size;
+    const explicitBoost=arr.reduce((s,p)=>s+(
+      (explicit.bodykit&&p[2].includes("bodykit"))||
+      (explicit.front&&p[2].includes("front"))||
+      (explicit.heck&&p[2].includes("heck"))||
+      (explicit.tiefer&&p[2].includes("tiefer"))
+    ?100:0),0);
+    const quality=Math.abs(sum-target)-families*3-explicitBoost;
+    if(!best||quality<best.quality)best={sum,arr,quality};
   }
   if(best)return best.arr;
 
-  // Falls die Auswahl einmal nicht ausreicht: große Budgets mit zusätzlichen
-  // sinnvollen Einzelpositionen auffüllen, ohne den Zielbereich zu verlassen.
-  let chosen=[],sum=0;
-  const used=new Set();
-  const candidates=pool.slice().sort((a,b)=>Math.abs((target-sum)-a[1])-Math.abs((target-sum)-b[1]));
-  while(sum<min){
-    let pick=null;
-    for(const p of candidates){
-      if(used.has(p[0]))continue;
-      if(sum+p[1]<=max && (!pick || Math.abs(target-(sum+p[1]))<Math.abs(target-(sum+pick[1])))) pick=p;
+  // Fallback: closest varied combination.
+  let chosen=[],sum=0,usedFamilies=new Set();
+  for(const p of pool){
+    const f=familyOf(p);
+    if(sum+p[1]<=max && (!usedFamilies.has(f)||chosen.length>=3)){
+      chosen.push(p);sum+=p[1];usedFamilies.add(f);
+      if(sum>=min)break;
     }
-    if(!pick)break;
-    chosen.push(pick); used.add(pick[0]); sum+=pick[1];
   }
   return chosen;
 }
