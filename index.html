@@ -5,373 +5,305 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BuildPlanner Cars</title>
 <style>
-  *{box-sizing:border-box}
-  body{
-    margin:0;font-family:Arial,Helvetica,sans-serif;
-    background:#0b0f14;color:#fff;
-  }
-  .wrap{max-width:1100px;margin:auto;padding:24px}
-  header{text-align:center;padding:38px 10px 28px}
-  h1{font-size:clamp(40px,7vw,76px);margin:0;font-weight:800}
-  h1 span{color:#55d6ff}
-  header p{color:#cbd3dc;font-size:18px;max-width:760px;margin:18px auto}
-  .card{
-    background:#121922;border:1px solid #2b3744;border-radius:18px;
-    padding:22px;margin:18px 0;box-shadow:0 10px 35px #0005
-  }
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  label{display:block;font-weight:700;margin-bottom:8px}
-  input,select,textarea,button{
-    width:100%;border-radius:12px;border:1px solid #3a4653;
-    background:#0c1219;color:#fff;padding:14px;font-size:16px
-  }
-  textarea{min-height:120px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:2px solid #55d6ff}
-  .budget-row{display:flex;gap:10px;flex-wrap:wrap}
-  .budget-row input{flex:1;min-width:180px}
-  .budget-btn{
-    width:auto;padding:10px 16px;cursor:pointer;background:#18232e
-  }
-  .budget-btn.active{background:#55d6ff;color:#071018;border-color:#55d6ff;font-weight:800}
-  .main-btn{
-    margin-top:18px;background:#55d6ff;color:#071018;border:0;
-    font-weight:800;cursor:pointer;font-size:18px
-  }
-  .main-btn:hover{filter:brightness(1.08)}
-  .hidden{display:none}
-  .notice{color:#aeb9c4;font-size:14px;line-height:1.5}
-  .result-head{display:flex;justify-content:space-between;gap:15px;align-items:end;flex-wrap:wrap}
-  .total{font-size:34px;font-weight:800;color:#55d6ff}
-  .ok{color:#73e6a2;font-weight:700}
-  .parts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
-  .part{
-    background:#0d141c;border:1px solid #293744;border-radius:14px;padding:16px
-  }
-  .part h3{margin:0 0 7px}
-  .part p{margin:6px 0;color:#bfc9d4}
-  .part .price{font-size:22px;color:#fff;font-weight:800}
-  .part a{
-    display:inline-block;margin-top:10px;color:#55d6ff;text-decoration:none
-  }
-  @media(max-width:750px){
-    .grid,.parts{grid-template-columns:1fr}
-    .wrap{padding:14px}
-  }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#080b10;color:#fff}
+header{padding:16px 22px;background:#090d13;border-bottom:1px solid #29313b;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:21px;font-weight:800}.logo span{color:#65d8ff}
+main{max-width:1100px;margin:auto;padding:20px 16px 60px}
+.hero{text-align:center;padding:38px 5px}.hero h1{font-size:clamp(40px,7vw,70px);margin:0}.hero h1 span{color:#65d8ff}
+.hero p{color:#adb7c3;font-size:17px;line-height:1.5}
+.card{background:#10151c;border:1px solid #2c343e;border-radius:18px;padding:22px;margin-top:18px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{display:block;color:#adb7c3;font-size:14px;font-weight:bold;margin-bottom:8px}
+input,select,textarea{width:100%;background:#0a0f15;color:#fff;border:1px solid #3a434e;border-radius:11px;padding:14px;font-size:16px;outline:0}
+textarea{min-height:130px;resize:vertical}
+.upload{display:block;margin-top:16px;padding:30px;text-align:center;border:2px dashed #3a434e;border-radius:15px;background:#0d1219;cursor:pointer}
+.upload strong{display:block;font-size:18px;margin-bottom:7px}.upload small{color:#9ca7b4}
+#photoInput{display:none}.preview{display:none;width:100%;max-height:380px;object-fit:contain;margin-top:15px;border-radius:14px}
+.budgettop{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.budgetvalue{font-size:25px;font-weight:800;color:#65d8ff}
+.budgetrow{display:flex;gap:10px;margin-top:12px}.budgetrow input{flex:1}
+.small{background:#151b23;color:#fff;border:1px solid #39424d;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.quicktitle{color:#adb7c3;font-size:14px;font-weight:bold;margin:18px 0 9px}
+.quicklist{display:flex;flex-wrap:wrap;gap:8px}.quick{border-radius:999px;padding:9px 13px;background:#151b23;color:#fff;border:1px solid #39424d;font-weight:700;cursor:pointer}
+.quick.active,.quick:hover,.small:hover{border-color:#65d8ff;color:#65d8ff}
+.range{width:100%;margin-top:18px;accent-color:#65d8ff}
+.rangecaption{display:flex;justify-content:space-between;color:#7f8995;font-size:12px;margin-top:5px}
+.build{width:100%;margin-top:22px;padding:17px;border:0;border-radius:13px;background:#65d8ff;color:#071017;font-size:18px;font-weight:900;cursor:pointer}
+.status{color:#65d8ff;font-weight:bold;margin-top:12px}
+.result{display:none}.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{background:#0a0f15;border:1px solid #303844;border-radius:12px;padding:16px}.box span{display:block;color:#929dab;font-size:13px;margin-bottom:5px}
+.products{margin-top:22px}.product{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid #292f38}
+.product small{display:block;color:#929dab;margin-top:4px}.price{color:#65d8ff;font-weight:900}
+.total{display:flex;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid #39414c;font-size:22px;font-weight:900}
+.note{color:#929dab;font-size:13px;line-height:1.5;margin-top:14px}
+.idea-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
+.idea{background:#0a0f15;border:1px solid #303844;border-radius:13px;padding:16px}
+.idea .icon{font-size:27px}.idea h3{margin:9px 0 6px;font-size:16px}.idea p{margin:0;color:#9da7b3;font-size:13px;line-height:1.45}
+@media(max-width:750px){.grid,.summary,.idea-grid{grid-template-columns:1fr}main{padding:15px 12px 45px}.card{padding:17px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Dein Auto.<br><span>Dein Build.</span></h1>
-    <p>Lade dein Auto hoch, beschreibe deinen Wunsch-Build und plane dein Budget mit einer realistischen Teileauswahl.</p>
-  </header>
+<header><div class="logo">BuildPlanner <span>Cars</span></div></header>
 
-  <section class="card">
-    <h2>🚗 Dein Auto</h2>
-    <div class="grid">
-      <div>
-        <label for="make">Marke</label>
-        <select id="make">
-          <option value="">Marke auswählen</option>
-          <option>BMW</option><option>Mercedes-Benz</option><option>Audi</option>
-          <option>Volkswagen</option><option>Opel</option><option>Ford</option>
-          <option>Honda</option><option>Nissan</option><option>Toyota</option>
-          <option>Seat</option><option>Skoda</option><option>Andere</option>
-        </select>
-      </div>
-      <div>
-        <label for="model">Modell</label>
-        <input id="model" placeholder="z. B. Golf 7 GTI">
-      </div>
-      <div>
-        <label for="year">Baujahr</label>
-        <input id="year" type="number" placeholder="z. B. 2018">
-      </div>
-    </div>
-  </section>
+<main>
+<section class="hero">
+<h1>Dein Auto. <span>Dein Build.</span></h1>
+<p>Plane deinen Umbau, wähle dein Budget und bekomme passende Ideen für deinen persönlichen Car-Build.</p>
+</section>
 
-  <section class="card">
-    <h2>📸 Foto deines Autos</h2>
-    <input id="photo" type="file" accept="image/*">
-    <p id="photoName" class="notice">Lade ein Foto von deinem eigenen Auto hoch.</p>
-  </section>
-
-  <section class="card">
-    <h2>🔧 Was möchtest du verändern?</h2>
-    <label for="changes">Dein Wunsch-Build</label>
-    <textarea id="changes" placeholder="z. B. sportlicher Look, schwarze Felgen, tieferlegen, Spoiler und schwarze Details"></textarea>
-  </section>
-
-  <section class="card">
-    <h2>💶 Dein Budget</h2>
-    <p class="notice">Wähle einen Betrag von 1.000 € bis 10.000 € über die Buttons oder gib unten dein eigenes Budget ein. Ab 10.000 € ist das Budget nach oben offen. Der fertige Build bleibt maximal 90 € vom Wunschbudget entfernt.</p>
-    <div class="budget-row" id="quickBudgets"></div>
-    <div style="margin-top:12px">
-      <input id="budget" type="number" min="1000" step="10" placeholder="z. B. 1500">
-    </div>
-    <button class="main-btn" id="buildBtn">✨ Build erstellen</button>
-  </section>
-
-  <section class="card hidden" id="results">
-    <div class="result-head">
-      <div>
-        <h2>Dein Build</h2>
-        <p id="resultInfo" class="notice"></p>
-      </div>
-      <div class="total" id="total"></div>
-    </div>
-    <p id="budgetCheck" class="ok"></p>
-    <div class="parts" id="parts"></div>
-  </section>
+<section class="card">
+<h2>🚗 Dein Fahrzeug</h2>
+<div class="grid">
+<div><label>Automarke</label><input id="brand" placeholder="z.B. BMW"></div>
+<div><label>Modell</label><input id="model" placeholder="z.B. 3er E90"></div>
+<div><label>Baujahr</label><input id="year" placeholder="z.B. 2010"></div>
 </div>
 
-<script>
-/*
-  WICHTIG:
-  Die unten eingetragenen Preise sind Beispiel-/Demo-Produktdaten.
-  Für einen echten Shopbetrieb müssen sie später durch verifizierte,
-  aktuelle Händlerangebote bzw. eine Produkt-API ersetzt werden.
-*/
+<label class="upload">
+<input id="photoInput" type="file" accept="image/*">
+<strong>📸 Foto deines Autos hochladen</strong>
+<small>Das Bild wird als Vorschau in deinem Build angezeigt.</small>
+</label>
+<img id="preview" class="preview" alt="Auto-Vorschau">
+</section>
 
-const products = [
-  {name:"Sportfedern / Tieferlegungsfedern",cat:"Fahrwerk",price:349,url:"https://www.google.com/search?q=Tieferlegungsfedern+Auto"},
-  {name:"Gewindefahrwerk",cat:"Fahrwerk",price:899,url:"https://www.google.com/search?q=Gewindefahrwerk+Auto"},
-  {name:"Sportfahrwerk",cat:"Fahrwerk",price:699,url:"https://www.google.com/search?q=Sportfahrwerk+Auto"},
-  {name:"Spurverbreiterungen",cat:"Fahrwerk",price:159,url:"https://www.google.com/search?q=Spurverbreiterungen+Auto"},
-  {name:"Sportauspuff / Endschalldämpfer",cat:"Auspuff",price:499,url:"https://www.google.com/search?q=Sportauspuff+Auto"},
-  {name:"Klappenabgasanlage",cat:"Auspuff",price:1299,url:"https://www.google.com/search?q=Klappenabgasanlage+Auto"},
-  {name:"Sportluftfilter",cat:"Motor",price:89,url:"https://www.google.com/search?q=Sportluftfilter+Auto"},
-  {name:"Ansaugung",cat:"Motor",price:349,url:"https://www.google.com/search?q=Sport+Ansaugung+Auto"},
-  {name:"Chiptuning / Software",cat:"Motor",price:499,url:"https://www.google.com/search?q=Chiptuning+Auto"},
-  {name:"Frontlippe / Frontspoiler",cat:"Optik",price:199,url:"https://www.google.com/search?q=Frontlippe+Auto"},
-  {name:"Heckspoiler",cat:"Optik",price:249,url:"https://www.google.com/search?q=Heckspoiler+Auto"},
-  {name:"Diffusor",cat:"Optik",price:229,url:"https://www.google.com/search?q=Diffusor+Auto"},
-  {name:"Seitenschweller",cat:"Optik",price:399,url:"https://www.google.com/search?q=Seitenschweller+Auto"},
-  {name:"Frontstoßfänger / Bodykit-Teil",cat:"Optik",price:699,url:"https://www.google.com/search?q=Bodykit+Front+Auto"},
-  {name:"Schwarze Embleme",cat:"Optik",price:39,url:"https://www.google.com/search?q=schwarze+Auto+Embleme"},
-  {name:"LED-Seitenblinker",cat:"Optik",price:59,url:"https://www.google.com/search?q=LED+Seitenblinker+Auto"},
-  {name:"Scheibentönung",cat:"Optik",price:179,url:"https://www.google.com/search?q=Scheibent%C3%B6nung+Auto"},
-  {name:"LED-Innenraumbeleuchtung",cat:"Optik",price:79,url:"https://www.google.com/search?q=LED+Innenraumbeleuchtung+Auto"},
-  {name:"Felgen-Set 17 Zoll",cat:"Felgen",price:599,url:"https://www.google.com/search?q=17+Zoll+Alufelgen+Set"},
-  {name:"Felgen-Set 18 Zoll",cat:"Felgen",price:799,url:"https://www.google.com/search?q=18+Zoll+Alufelgen+Set"},
-  {name:"Felgen-Set 19 Zoll",cat:"Felgen",price:999,url:"https://www.google.com/search?q=19+Zoll+Alufelgen+Set"},
-  {name:"Felgen-Set 20 Zoll",cat:"Felgen",price:1499,url:"https://www.google.com/search?q=20+Zoll+Alufelgen+Set"},
-  {name:"Premium-Felgen-Set",cat:"Felgen",price:1999,url:"https://www.google.com/search?q=Premium+Alufelgen+Set+Auto"},
-  {name:"Sportbremsanlage",cat:"Bremsen",price:1499,url:"https://www.google.com/search?q=Sportbremsanlage+Auto"},
-  {name:"Bremsscheiben + Beläge",cat:"Bremsen",price:599,url:"https://www.google.com/search?q=Bremsscheiben+Bremsbel%C3%A4ge+Sport+Auto"},
-  {name:"Carbon-Airbox",cat:"Motor",price:899,url:"https://www.google.com/search?q=Carbon+Airbox+Auto"},
-  {name:"Ladeluftkühler",cat:"Motor",price:699,url:"https://www.google.com/search?q=Ladeluftk%C3%BChler+Auto"},
-  {name:"Downpipe",cat:"Auspuff",price:599,url:"https://www.google.com/search?q=Downpipe+Auto"},
-  {name:"Fächerkrümmer",cat:"Motor",price:799,url:"https://www.google.com/search?q=F%C3%A4cherkr%C3%BCmmer+Auto"},
-  {name:"Carbon-Motorhaube",cat:"Carbon",price:1699,url:"https://www.google.com/search?q=Carbon+Motorhaube+Auto"},
-  {name:"Carbon-Dachspoiler",cat:"Carbon",price:499,url:"https://www.google.com/search?q=Carbon+Dachspoiler+Auto"},
-  {name:"Carbon-Diffusor",cat:"Carbon",price:899,url:"https://www.google.com/search?q=Carbon+Diffusor+Auto"},
-  {name:"Carbon-Spiegelkappen",cat:"Carbon",price:299,url:"https://www.google.com/search?q=Carbon+Spiegelkappen+Auto"},
-  {name:"Innenraum-Upgrade",cat:"Innenraum",price:599,url:"https://www.google.com/search?q=Auto+Innenraum+Upgrade"},
-  {name:"Sportsitze",cat:"Innenraum",price:1499,url:"https://www.google.com/search?q=Sportsitze+Auto"},
-  {name:"Lenkrad-Sportumbau",cat:"Innenraum",price:799,url:"https://www.google.com/search?q=Sportlenkrad+Auto"},
-  {name:"Audio-Upgrade",cat:"Audio",price:999,url:"https://www.google.com/search?q=Auto+Audio+Upgrade"},
-  {name:"Premium-Soundsystem",cat:"Audio",price:1999,url:"https://www.google.com/search?q=Premium+Soundsystem+Auto"},
-  {name:"Fahrzeugfolierung",cat:"Folie",price:1499,url:"https://www.google.com/search?q=Auto+Folierung"},
-  {name:"Premium-Folierung",cat:"Folie",price:2499,url:"https://www.google.com/search?q=Premium+Auto+Folierung"},
-  {name:"Keramikversiegelung",cat:"Pflege",price:599,url:"https://www.google.com/search?q=Keramikversiegelung+Auto"},
-  {name:"Komplett-Aufbereitung",cat:"Pflege",price:299,url:"https://www.google.com/search?q=Auto+Komplettaufbereitung"}
+<section class="card">
+<h2>🎨 Was möchtest du verändern?</h2>
+<textarea id="changes" placeholder="z.B. sportlicher aussehen, tiefer wirken, schwarze Felgen, aggressivere Front, schwarze Details..."></textarea>
+</section>
+
+<section class="card">
+<div class="budgettop">
+<strong>💶 Dein Budget</strong>
+<div class="budgetvalue" id="budgetDisplay">2.000 €</div>
+</div>
+
+<div class="budgetrow">
+<input id="budgetInput" type="number" min="50" max="50000" step="1" value="2000" placeholder="Budget eingeben">
+<button class="small" id="setBudget">Übernehmen</button>
+</div>
+
+<div class="quicktitle">Schnellauswahl</div>
+<div class="quicklist" id="quickList"></div>
+
+<input class="range" id="budgetRange" type="range" min="50" max="50000" step="100" value="2000">
+<div class="rangecaption"><span>50 €</span><span>bis 50.000 €</span></div>
+
+<button class="build" id="build">✨ Build erstellen</button>
+<div class="status" id="status"></div>
+</section>
+
+<section class="card result" id="result">
+<h2>🔥 Dein Build</h2>
+<div class="summary">
+<div class="box"><span>Fahrzeug</span><strong id="sumCar"></strong></div>
+<div class="box"><span>Budget</span><strong id="sumBudget"></strong></div>
+<div class="box"><span>Wünsche</span><strong id="sumChanges"></strong></div>
+<div class="box"><span>Budget-Abweichung</span><strong id="sumDeviation"></strong></div>
+</div>
+
+<div class="products">
+<h3>🛠️ Vorgeschlagene Teile</h3>
+<div id="productList"></div>
+<div class="total"><span>Gesamtkosten</span><span id="total">0 €</span></div>
+<div class="note">Die Preise in dieser Version sind Demo-/Beispielpreise. Später können hier echte, fahrzeugspezifische Produkte und Händlerpreise eingebunden werden.</div>
+</div>
+
+<div class="card" style="margin-top:22px;background:#0d1219">
+<h3>👀 Mehr Ideen für einen tieferen / sportlicheren Look</h3>
+<p style="color:#9da7b3">„Tiefer aussehen“ bedeutet nicht automatisch, dass das Fahrwerk geändert werden muss. Der Builder berücksichtigt deshalb auch optische Möglichkeiten:</p>
+<div class="idea-grid">
+<div class="idea"><div class="icon">🛞</div><h3>Größere Felgen</h3><p>18–20 Zoll und passende Reifen können den Radkasten deutlich voller wirken lassen.</p></div>
+<div class="idea"><div class="icon">⬛</div><h3>Schwarze Felgen</h3><p>Dunkle Felgen verändern die Seitenansicht und lassen das Auto sportlicher wirken.</p></div>
+<div class="idea"><div class="icon">📉</div><h3>Tieferlegungsfedern</h3><p>Eine echte Tieferlegung reduziert den Abstand zwischen Reifen und Kotflügel.</p></div>
+<div class="idea"><div class="icon">🔧</div><h3>Gewindefahrwerk</h3><p>Höhe und Optik lassen sich je nach Fahrzeug individuell einstellen.</p></div>
+<div class="idea"><div class="icon">🪽</div><h3>Seitenschweller</h3><p>Seitliche Schweller können die Karosserie optisch näher zum Boden bringen.</p></div>
+<div class="idea"><div class="icon">💨</div><h3>Frontlippe & Diffusor</h3><p>Mehr schwarze bzw. tiefe Anbauteile erzeugen einen aggressiveren Look.</p></div>
+<div class="idea"><div class="icon">⚫</div><h3>Rad-/Reifen-Fitment</h3><p>Spurverbreiterungen und eine passende Radposition können die Räder satter im Radhaus stehen lassen.</p></div>
+<div class="idea"><div class="icon">🖤</div><h3>Schwarze Details</h3><p>Embleme, Spiegelkappen, Zierleisten und weitere Details können die Optik verändern.</p></div>
+<div class="idea"><div class="icon">🎨</div><h3>Folierung</h3><p>Eine andere Farbe oder ein dunkles Finish verändert die Gesamtwirkung ohne Fahrwerksumbau.</p></div>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+const products=[
+["Sportfedern / Tieferlegung",349,["tiefer","tieferlegen","fahrwerk"]],
+["Gewindefahrwerk",899,["tiefer","tieferlegen","fahrwerk"]],
+["Sportfahrwerk",699,["tiefer","tieferlegen","fahrwerk"]],
+["Spurverbreiterungen",159,["tiefer","rad","felgen"]],
+["Sportauspuff / Endschalldämpfer",499,["auspuff","sound","sportlich"]],
+["Klappenabgasanlage",1299,["auspuff","sound"]],
+["Sportluftfilter",89,["sound","leistung"]],
+["Ansaugung",349,["leistung"]],
+["Chiptuning / Software",499,["leistung","tuning"]],
+["Frontlippe / Frontspoiler",199,["sportlich","front","tiefer"]],
+["Heckspoiler",249,["sportlich","spoiler"]],
+["Diffusor",229,["sportlich","tiefer","heck"]],
+["Seitenschweller",399,["sportlich","tiefer","seite"]],
+["Frontstoßfänger / Bodykit-Teil",699,["sportlich","front","bodykit"]],
+["Schwarze Embleme",39,["schwarz","details"]],
+["LED-Seitenblinker",59,["details"]],
+["Scheibentönung",179,["schwarz","optik"]],
+["LED-Innenraumbeleuchtung",79,["innenraum"]],
+["Felgen-Set 17 Zoll",599,["felgen","rad","tiefer"]],
+["Felgen-Set 18 Zoll",799,["felgen","rad","tiefer"]],
+["Felgen-Set 19 Zoll",999,["felgen","rad","tiefer"]],
+["Felgen-Set 20 Zoll",1499,["felgen","rad","tiefer"]],
+["Premium-Felgen-Set",1999,["felgen","rad"]],
+["Sportbremsanlage",1499,["bremse","sportlich"]],
+["Bremsscheiben + Beläge",599,["bremse"]],
+["Carbon-Airbox",899,["leistung"]],
+["Ladeluftkühler",699,["leistung"]],
+["Downpipe",599,["leistung","auspuff"]],
+["Fächerkrümmer",799,["leistung","auspuff"]],
+["Carbon-Motorhaube",1699,["carbon","sportlich"]],
+["Carbon-Dachspoiler",499,["carbon","spoiler"]],
+["Carbon-Diffusor",899,["carbon","tiefer","sportlich"]],
+["Carbon-Spiegelkappen",299,["carbon","schwarz","details"]],
+["Innenraum-Upgrade",599,["innenraum"]],
+["Sportsitze",1499,["innenraum","sportlich"]],
+["Lenkrad-Sportumbau",799,["innenraum","sportlich"]],
+["Audio-Upgrade",999,["audio","innenraum"]],
+["Premium-Soundsystem",1999,["audio","innenraum"]],
+["Fahrzeugfolierung",1499,["folie","optik"]],
+["Premium-Folierung",2499,["folie","optik"]],
+["Keramikversiegelung",599,["pflege"]],
+["Komplett-Aufbereitung",299,["pflege"]]
 ];
 
-const quick = [1000,1500,2000,2500,3000,4000,5000,6000,7000,8000,9000,10000];
-const qb = document.getElementById("quickBudgets");
-quick.forEach(v=>{
+const quickAmounts=[1000,1500,2000,2500,3000,4000,5000,6000,7000,8000,9000,10000];
+const input=document.getElementById("budgetInput");
+const range=document.getElementById("budgetRange");
+const display=document.getElementById("budgetDisplay");
+const quickList=document.getElementById("quickList");
+let budget=2000;
+
+const euro=n=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+
+quickAmounts.forEach(v=>{
   const b=document.createElement("button");
-  b.className="budget-btn";
-  b.textContent=v.toLocaleString("de-DE")+" €";
-  b.onclick=()=>{
-    document.getElementById("budget").value=v;
-    document.querySelectorAll(".budget-btn").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-  };
-  qb.appendChild(b);
+  b.className="quick"; b.dataset.v=v; b.textContent=euro(v);
+  b.onclick=()=>setBudget(v);
+  quickList.appendChild(b);
 });
 
-document.getElementById("photo").addEventListener("change", e=>{
-  const file=e.target.files[0];
-  document.getElementById("photoName").textContent=file ? "Ausgewählt: "+file.name : "Lade ein Foto von deinem eigenen Auto hoch.";
-});
+function setBudget(n){
+  n=Math.round(Number(n));
+  if(!Number.isFinite(n))return;
+  n=Math.max(50,Math.min(50000,n));
+  budget=n;
+  input.value=n;
+  range.value=n;
+  display.textContent=euro(n);
+  document.querySelectorAll(".quick").forEach(b=>b.classList.toggle("active",+b.dataset.v===n));
+}
+input.addEventListener("input",()=>{if(input.value!=="")setBudget(input.value)});
+document.getElementById("setBudget").onclick=()=>setBudget(input.value);
+range.oninput=()=>setBudget(range.value);
 
-function getBudget(){
-  let b=Number(document.getElementById("budget").value);
-  if(!Number.isFinite(b)) return null;
-  return Math.max(1000,Math.round(b/10)*10);
+document.getElementById("photoInput").onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const img=document.getElementById("preview");
+  img.src=URL.createObjectURL(file); img.style.display="block";
+};
+
+function wantedTags(text){
+  const t=text.toLowerCase();
+  const tags=[];
+  if(/tiefer|tief(er)? aussehen|boden|radhaus|stance|satt/.test(t)) tags.push("tiefer");
+  if(/felgen|räder|rad\b/.test(t)) tags.push("felgen","rad");
+  if(/sportlich|aggressiv|sportlicher/.test(t)) tags.push("sportlich");
+  if(/schwarz|black/.test(t)) tags.push("schwarz","details");
+  if(/auspuff|abgas|sound|laut/.test(t)) tags.push("auspuff","sound");
+  if(/leistung|ps|power|motor/.test(t)) tags.push("leistung");
+  if(/spoiler/.test(t)) tags.push("spoiler");
+  if(/front|stoßfänger/.test(t)) tags.push("front");
+  if(/innen|sitz|lenkrad/.test(t)) tags.push("innenraum");
+  if(/audio|musik/.test(t)) tags.push("audio");
+  if(/carbon/.test(t)) tags.push("carbon");
+  if(/folie|farbe/.test(t)) tags.push("folie","optik");
+  return [...new Set(tags)];
 }
 
-/*
-  Sucht eine Kombination echter eingetragener Produktpreise,
-  deren Summe möglichst nah am Wunschbudget liegt.
-  Toleranz: maximal 90 €.
-  Keine Kombination über Budget + 90 € wird ausgegeben.
-*/
-function chooseParts(budget, text){
-  const wanted=(text||"").toLowerCase();
-  let pool=[...products];
+function scoreProduct(p,tags){
+  return p[2].reduce((s,x)=>s+(tags.includes(x)?4:0),0);
+}
 
-  const keywords=[
-    ["felg",["Felgen"]],["rad",["Felgen"]],
-    ["fahrwerk",["Fahrwerk"]],["tiefer",["Fahrwerk"]],
-    ["auspuff",["Auspuff"]],["abgas",["Auspuff"]],
-    ["spoiler",["Optik","Carbon"]],["lippe",["Optik"]],
-    ["diffusor",["Optik","Carbon"]],["scheibe",["Optik"]],
-    ["getönt",["Optik"]],["blinker",["Optik"]],
-    ["emblem",["Optik"]],["luftfilter",["Motor"]],
-    ["leistung",["Motor"]],["tuning",["Motor"]],
-    ["carbon",["Carbon"]],["sitz",["Innenraum"]],
-    ["lenkrad",["Innenraum"]],["audio",["Audio"]],
-    ["sound",["Audio"]],["folie",["Folie"]],
-    ["brems",["Bremsen"]],["keramik",["Pflege"]]
-  ];
+function chooseParts(target,text){
+  const tags=wantedTags(text);
+  let pool=products.slice().sort((a,b)=>scoreProduct(b,tags)-scoreProduct(a,tags));
+  const min=Math.max(0,target-90), max=target+90;
 
-  const preferredCats=new Set();
-  keywords.forEach(([word,cats])=>{
-    if(wanted.includes(word)) cats.forEach(c=>preferredCats.add(c));
-  });
-
-  // Für kleine Budgets werden günstige Teile bevorzugt, bei größeren Budgets
-  // stehen hochwertige Teile zur Verfügung.
-  pool.sort((a,b)=>{
-    const ap=preferredCats.has(a.cat)?1:0;
-    const bp=preferredCats.has(b.cat)?1:0;
-    if(ap!==bp) return bp-ap;
-    return a.price-b.price;
-  });
-
-  const min=Math.max(0,budget-90);
-  const max=budget+90;
-
-  // Meet-in-the-middle: auch bei vielen Produkten bleibt die Suche schnell.
-  // Wir suchen die beste Kombination innerhalb von +/- 90 €.
-  let best=null,bestDiff=Infinity;
-
-  function searchExact(items, target){
-    const n=items.length;
-    let bestLocal=null,bestLocalDiff=Infinity;
-
-    function dfs(i,sum,selected){
-      if(sum>max) return;
-      const diff=Math.abs(sum-budget);
-      if(sum>=min && diff<bestLocalDiff){
-        bestLocalDiff=diff;
-        bestLocal=selected.slice();
-      }
-      if(i>=n || bestLocalDiff===0) return;
-
-      for(let j=i;j<n;j++){
-        const next=sum+items[j].price;
-        if(next>max) continue;
-        selected.push(items[j]);
-        dfs(j+1,next,selected);
-        selected.pop();
-      }
-    }
-
-    dfs(0,0,[]);
-    return {items:bestLocal,diff:bestLocalDiff};
-  }
-
-  // Für sehr große Budgets werden auch mehrere Stück eines Produkttyps
-  // ermöglicht, damit z.B. 15.000 € oder 25.000 € tatsächlich erreichbar sind.
-  let expanded=[];
+  // Dynamic programming in 1-Euro-Schritten, mit Produkten höchstens einmal.
+  // Für größere Budgets wird zunächst eine sinnvolle Auswahl priorisiert.
+  const maxUseful=Math.min(max,50000);
+  const dp=new Map([[0,[]]]);
   for(const p of pool){
-    expanded.push(p);
-    if(p.price<=1000){
-      expanded.push({...p,name:p.name+" – Variante 2"});
-      expanded.push({...p,name:p.name+" – Variante 3"});
+    const next=new Map(dp);
+    for(const [sum,arr] of dp){
+      const ns=sum+p[1];
+      if(ns<=maxUseful && !next.has(ns)) next.set(ns,[...arr,p]);
     }
+    dp.clear(); for(const [k,v] of next) dp.set(k,v);
+    if(dp.has(target)) break;
   }
 
-  // Begrenze die Suche auf sinnvolle Kandidaten nahe am Budget,
-  // aber behalte verschiedene Kategorien.
-  expanded.sort((a,b)=>{
-    const da=Math.abs(a.price-budget), db=Math.abs(b.price-budget);
-    const ac=preferredCats.has(a.cat)?-250:0, bc=preferredCats.has(b.cat)?-250:0;
-    return (da+ac)-(db+bc);
-  });
+  let best=null;
+  for(const [sum,arr] of dp){
+    if(sum>=min && sum<=max && (!best || Math.abs(sum-target)<Math.abs(best.sum-target))) best={sum,arr};
+  }
+  if(best)return best.arr;
 
-  // Greedy-Aufbau mit anschließendem Feintuning.
-  let selected=[],sum=0;
-  const usedNames=new Set();
-
-  const candidates=[...expanded].sort((a,b)=>b.price-a.price);
-  for(const p of candidates){
-    if(sum+p.price<=max && !usedNames.has(p.name)){
-      // Nicht blind alles nehmen: große Teile zuerst, wenn sie das Budget sinnvoll füllen.
-      if(sum+p.price>=min || sum===0){
-        selected.push(p);usedNames.add(p.name);sum+=p.price;
-      }
+  // Falls die Auswahl einmal nicht ausreicht: große Budgets mit zusätzlichen
+  // sinnvollen Einzelpositionen auffüllen, ohne den Zielbereich zu verlassen.
+  let chosen=[],sum=0;
+  const used=new Set();
+  const candidates=pool.slice().sort((a,b)=>Math.abs((target-sum)-a[1])-Math.abs((target-sum)-b[1]));
+  while(sum<min){
+    let pick=null;
+    for(const p of candidates){
+      if(used.has(p[0]))continue;
+      if(sum+p[1]<=max && (!pick || Math.abs(target-(sum+p[1]))<Math.abs(target-(sum+pick[1])))) pick=p;
     }
-    if(sum>=min) break;
+    if(!pick)break;
+    chosen.push(pick); used.add(pick[0]); sum+=pick[1];
   }
-
-  if(sum>=min && sum<=max){
-    return selected;
-  }
-
-  // Fallback: dynamische Suche mit den günstigeren, relevanten Produkten.
-  const compact=[...pool].slice(0,24);
-  const result=searchExact(compact,budget);
-  if(result.items && result.items.length) return result.items;
-
-  // Letzter Fallback: mehrere Kopien erlauben und per Greedy auffüllen.
-  selected=[];sum=0;
-  const repeated=[...pool].sort((a,b)=>b.price-a.price);
-  let guard=0;
-  while(sum<min && guard<500){
-    let candidate=repeated.find(p=>sum+p.price<=max);
-    if(!candidate) break;
-    selected.push(candidate);
-    sum+=candidate.price;
-    guard++;
-  }
-  if(sum>=min && sum<=max) return selected;
-
-  return null;
+  return chosen;
 }
 
-document.getElementById("buildBtn").onclick=()=>{
-  const budget=getBudget();
-  const make=document.getElementById("make").value;
-  const model=document.getElementById("model").value.trim();
-  const year=document.getElementById("year").value.trim();
-  const changes=document.getElementById("changes").value.trim();
-
-  if(!budget){
-    alert("Bitte zuerst ein Budget ab 1.000 € eingeben.");
-    return;
-  }
+document.getElementById("build").onclick=()=>{
+  const brand=document.getElementById("brand").value.trim()||"Marke nicht angegeben";
+  const model=document.getElementById("model").value.trim()||"Modell nicht angegeben";
+  const year=document.getElementById("year").value.trim()||"Baujahr nicht angegeben";
+  const changes=document.getElementById("changes").value.trim()||"Keine Änderungen angegeben";
 
   const chosen=chooseParts(budget,changes);
+  const total=chosen.reduce((s,p)=>s+p[1],0);
+  const deviation=total-budget;
 
-  if(!chosen){
-    alert("Für dieses Budget konnte aus den aktuell hinterlegten Produktpreisen keine Kombination innerhalb von ±90 € gefunden werden. Später wird dafür eine größere Produktdatenbank verwendet.");
-    return;
-  }
+  document.getElementById("sumCar").textContent=brand+" "+model+" · "+year;
+  document.getElementById("sumBudget").textContent=euro(budget);
+  document.getElementById("sumChanges").textContent=changes;
+  document.getElementById("sumDeviation").textContent=(deviation>=0?"+":"")+euro(deviation);
 
-  const sum=chosen.reduce((a,p)=>a+p.price,0);
-  document.getElementById("total").textContent=sum.toLocaleString("de-DE")+" €";
-  document.getElementById("resultInfo").textContent=
-    `${make||"Auto"} ${model||""} ${year||""} · Wunschbudget ${budget.toLocaleString("de-DE")} €`;
+  const list=document.getElementById("productList");
+  list.innerHTML="";
+  chosen.forEach(p=>{
+    const row=document.createElement("div");
+    row.className="product";
+    row.innerHTML="<div><strong>"+p[0]+"</strong><small>Passende Build-Idee · Beispielpreis</small></div><div class='price'>"+euro(p[1])+"</div>";
+    list.appendChild(row);
+  });
+  document.getElementById("total").textContent=euro(total);
+  document.getElementById("status").textContent=chosen.length
+    ?"✓ Build wurde erstellt."
+    :"Für dieses Budget konnte mit den aktuellen Demo-Produkten keine passende Kombination gefunden werden.";
 
-  document.getElementById("budgetCheck").textContent=
-    `✓ Gesamtpreis ${sum.toLocaleString("de-DE")} € · Abweichung: ${Math.abs(sum-budget).toLocaleString("de-DE")} € (max. 90 €)`;
-
-  document.getElementById("parts").innerHTML=chosen.map(p=>`
-    <div class="part">
-      <h3>${p.name}</h3>
-      <p>${p.cat}</p>
-      <div class="price">${p.price.toLocaleString("de-DE")} €</div>
-      <a href="${p.url}" target="_blank" rel="noopener">Produkt suchen →</a>
-    </div>
-  `).join("");
-
-  document.getElementById("results").classList.remove("hidden");
-  document.getElementById("results").scrollIntoView({behavior:"smooth"});
+  const r=document.getElementById("result"); r.style.display="block";
+  setTimeout(()=>r.scrollIntoView({behavior:"smooth"}),100);
 };
 </script>
 </body>
