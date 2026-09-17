@@ -41,6 +41,11 @@ textarea{min-height:130px;resize:vertical}
 .idea{background:#0a0f15;border:1px solid #303844;border-radius:13px;padding:16px}
 .idea .icon{font-size:27px}.idea h3{margin:9px 0 6px;font-size:16px}.idea p{margin:0;color:#9da7b3;font-size:13px;line-height:1.45}
 @media(max-width:750px){.grid,.summary,.idea-grid{grid-template-columns:1fr}main{padding:15px 12px 45px}.card{padding:17px}}
+
+.purchase-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.purchase-link{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border:1px solid #39424d;border-radius:9px;background:#151b23;color:#fff;text-decoration:none;font-size:12px;font-weight:800}
+.purchase-link:hover{border-color:#65d8ff;color:#65d8ff}
+.purchase-link.primary{border-color:#65d8ff;color:#65d8ff}
 </style>
 </head>
 <body>
@@ -110,7 +115,7 @@ textarea{min-height:130px;resize:vertical}
 <h3>🛠️ Vorgeschlagene Teile</h3>
 <div id="productList"></div>
 <div class="total"><span>Gesamtkosten</span><span id="total">0 €</span></div>
-<div class="note">Die Preise in dieser Version sind Demo-/Beispielpreise. Später können hier echte, fahrzeugspezifische Produkte und Händlerpreise eingebunden werden.</div>
+<div class="note">Die angezeigten Preise sind weiterhin Demo-/Beispielpreise. Über die Buttons werden echte Shops mit einer Suche nach deinem ausgewählten Fahrzeug und dem vorgeschlagenen Teil geöffnet. Vor dem Kauf bitte Passform, Baujahr, Motorisierung und Zulassung prüfen.</div>
 </div>
 
 <div class="card" style="margin-top:22px;background:#0d1219">
@@ -339,6 +344,18 @@ function chooseParts(target,text){
   return chosen;
 }
 
+
+function enc(s){return encodeURIComponent(s).replace(/%20/g,"+");}
+function buySearchLinks(brand,model,year,productName){
+  const query=[brand,model,year,productName].filter(Boolean).join(" ");
+  const q=enc(query);
+  return {
+    ebay:"https://www.ebay.de/sch/i.html?_nkw="+q,
+    amazon:"https://www.amazon.de/s?k="+q,
+    google:"https://www.google.com/search?tbm=shop&q="+q
+  };
+}
+
 document.getElementById("build").onclick=()=>{
   const brand=document.getElementById("brand").value.trim()||"Marke nicht angegeben";
   const model=document.getElementById("model").value.trim()||"Modell nicht angegeben";
@@ -359,7 +376,12 @@ document.getElementById("build").onclick=()=>{
   chosen.forEach(p=>{
     const row=document.createElement("div");
     row.className="product";
-    row.innerHTML="<div><strong>"+p[0]+"</strong><small>Passende Build-Idee · Beispielpreis</small></div><div class='price'>"+euro(p[1])+"</div>";
+    const links=buySearchLinks(brand,model,year,p[0]);
+    row.innerHTML="<div style='flex:1'><strong>"+p[0]+"</strong><small>Passende Build-Idee · Beispielpreis</small><div class='purchase-links'>"+
+      "<a class='purchase-link primary' href='"+links.ebay+"' target='_blank' rel='noopener noreferrer'>🛒 eBay</a>"+
+      "<a class='purchase-link' href='"+links.amazon+"' target='_blank' rel='noopener noreferrer'>🛍️ Amazon</a>"+
+      "<a class='purchase-link' href='"+links.google+"' target='_blank' rel='noopener noreferrer'>🔎 Weitere Shops</a>"+
+      "</div></div><div class='price'>"+euro(p[1])+"</div>";
     list.appendChild(row);
   });
   document.getElementById("total").textContent=euro(total);
