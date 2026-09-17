@@ -47,52 +47,444 @@ textarea{min-height:130px;resize:vertical}
 <header><div class="logo">BuildPlanner <span>Cars</span></div></header>
 
 <main>
+<section class="hero">
+<h1>Dein Auto. <span>Dein Build.</span></h1>
+<p>Plane deinen Umbau, wähle dein Budget und bekomme passende Ideen für deinen persönlichen Car-Build.</p>
+</section>
 
+<section class="card">
+<h2>🚗 Dein Fahrzeug</h2>
+<div class="grid">
+<div><label>Automarke</label><input id="brand" placeholder="z.B. BMW"></div>
+<div><label>Modell</label><input id="model" placeholder="z.B. 3er E90"></div>
+<div><label>Baujahr</label><input id="year" placeholder="z.B. 2010"></div>
+</div>
+
+<label class="upload">
+<input id="photoInput" type="file" accept="image/*">
+<strong>📸 Foto deines Autos hochladen</strong>
+<small>Das Bild wird als Vorschau in deinem Build angezeigt.</small>
+</label>
+<img id="preview" class="preview" alt="Auto-Vorschau">
+<div id="aiHint" style="display:none;margin-top:12px;padding:14px;border:1px solid #303844;border-radius:12px;background:#0a0f15;color:#aeb8c4;font-size:14px;line-height:1.5">
+  🤖 <strong style="color:#fff">KI-Build-Idee:</strong> Dein Wunsch wird später für eine realistische Bildvorschau genutzt – z. B. größere Frontlippe, aggressives Bodykit, tiefer wirkende Seitenlinie oder anderer Heckdiffusor. Das Bild ist eine Visualisierung und nicht automatisch das exakte gekaufte Produkt.
+</div>
+</section>
+
+<section class="card">
+<h2>🎨 Was möchtest du verändern?</h2>
+<textarea id="changes" placeholder="z.B. sportlicher aussehen, tiefer wirken, schwarze Felgen, aggressivere Front, schwarze Details..."></textarea>
+</section>
+
+<section class="card">
+<div class="budgettop">
+<strong>💶 Dein Budget</strong>
+<div class="budgetvalue" id="budgetDisplay">2.000 €</div>
+</div>
+
+<div class="budgetrow">
+<input id="budgetInput" type="number" min="1" max="50000" step="1" value="2000" placeholder="Zahleneingabe (1–50.000 €)" inputmode="numeric">
+<button class="small" id="setBudget">Übernehmen</button>
+</div>
+
+<div class="quicktitle">Schnellauswahl</div>
+<div class="quicklist" id="quickList"></div>
+
+<input class="range" id="budgetRange" type="range" min="50" max="50000" step="100" value="2000">
+<div class="rangecaption"><span>50 €</span><span>bis 50.000 €</span></div>
+
+<button class="build" id="build">✨ Build erstellen</button>
+<div class="status" id="status"></div>
+</section>
+
+<section class="card result" id="result">
+<h2>🔥 Dein Build</h2>
+
+
+<div class="summary">
+<div class="box"><span>Fahrzeug</span><strong id="sumCar"></strong></div>
+<div class="box"><span>Budget</span><strong id="sumBudget"></strong></div>
+<div class="box"><span>Wünsche</span><strong id="sumChanges"></strong></div>
+<div class="box"><span>Budget-Abweichung</span><strong id="sumDeviation"></strong></div>
+</div>
+
+<div class="products">
+<h3>🛠️ Vorgeschlagene Teile</h3>
+<div id="productList"></div>
+<div class="total"><span>Gesamtkosten</span><span id="total">0 €</span></div>
+<div class="note">Die Preise in dieser Version sind Demo-/Beispielpreise. Später können hier echte, fahrzeugspezifische Produkte und Händlerpreise eingebunden werden.</div>
+</div>
+
+<div class="card" style="margin-top:22px;background:#0d1219">
+<h3>👀 Mehr Ideen für einen tieferen / sportlicheren Look</h3>
+<p style="color:#9da7b3">„Tiefer aussehen“ bedeutet nicht automatisch, dass das Fahrwerk geändert werden muss. Der Builder berücksichtigt deshalb auch optische Möglichkeiten:</p>
+<div class="idea-grid">
+<div class="idea"><div class="icon">🛞</div><h3>Größere Felgen</h3><p>18–20 Zoll und passende Reifen können den Radkasten deutlich voller wirken lassen.</p></div>
+<div class="idea"><div class="icon">⬛</div><h3>Schwarze Felgen</h3><p>Dunkle Felgen verändern die Seitenansicht und lassen das Auto sportlicher wirken.</p></div>
+<div class="idea"><div class="icon">📉</div><h3>Tieferlegungsfedern</h3><p>Eine echte Tieferlegung reduziert den Abstand zwischen Reifen und Kotflügel.</p></div>
+<div class="idea"><div class="icon">🔧</div><h3>Gewindefahrwerk</h3><p>Höhe und Optik lassen sich je nach Fahrzeug individuell einstellen.</p></div>
+<div class="idea"><div class="icon">🪽</div><h3>Seitenschweller</h3><p>Seitliche Schweller können die Karosserie optisch näher zum Boden bringen.</p></div>
+<div class="idea"><div class="icon">💨</div><h3>Frontlippe & Diffusor</h3><p>Mehr schwarze bzw. tiefe Anbauteile erzeugen einen aggressiveren Look.</p></div>
+<div class="idea"><div class="icon">⚫</div><h3>Rad-/Reifen-Fitment</h3><p>Spurverbreiterungen und eine passende Radposition können die Räder satter im Radhaus stehen lassen.</p></div>
+<div class="idea"><div class="icon">🖤</div><h3>Schwarze Details</h3><p>Embleme, Spiegelkappen, Zierleisten und weitere Details können die Optik verändern.</p></div>
+<div class="idea"><div class="icon">🎨</div><h3>Folierung</h3><p>Eine andere Farbe oder ein dunkles Finish verändert die Gesamtwirkung ohne Fahrwerksumbau.</p></div>
+</div>
+</div>
+</section>
 </main>
 
-
-
 <script>
-(function(){
-  window.BP_purchaseUrl = function(item){
-    if(item && item.purchaseUrl) return item.purchaseUrl;
-    return "https://dm-autoteile.de/";
-  };
-  window.BP_purchaseButton = function(item){
-    const url = window.BP_purchaseUrl(item);
-    return '<a class="buy-btn" href="'+url+'" target="_blank" rel="noopener noreferrer">🛒 Teil kaufen</a>';
-  };
-})();
-</script>
-<style>
-.buy-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:9px 13px;border-radius:10px;background:#ff7a00;color:#fff;text-decoration:none;font-weight:800;font-size:13px}
-.buy-btn:hover{filter:brightness(1.08)}
-</style>
+const products=[
+["Frontlippe – aggressiver Look",249,["front","bodykit","tiefer","aggressiv","optik"]],
+["Große Frontlippe / Splitter",449,["front","bodykit","tiefer","aggressiv"]],
+["Komplettes Bodykit",1899,["bodykit","aggressiv","sportlich","front","tiefer"]],
+["Widebody-Kit",2499,["bodykit","widebody","aggressiv","rad"]],
+["Seitenschweller",399,["seite","bodykit","tiefer","aggressiv"]],
+["Heckansatz / Heckdiffusor",349,["heck","bodykit","tiefer","aggressiv"]],
+["Aggressiver Heckdiffusor",599,["heck","bodykit","sportlich"]],
+["Heckspoiler / Dachspoiler",299,["spoiler","aggressiv","sportlich"]],
+["Großer GT-Heckflügel",699,["spoiler","aggressiv"]],
+["Kühlergrill – Black Style",199,["grill","schwarz","optik"]],
+["Sportgrill / Wabengitter",299,["grill","sportlich","aggressiv"]],
+["Schwarze Embleme",39,["schwarz","details"]],
+["Carbon-Spiegelkappen",299,["carbon","schwarz","details"]],
+["Carbon-Motorhaube",1699,["carbon","aggressiv","optik"]],
+["Carbon-Diffusor",899,["carbon","heck","bodykit"]],
+["Scheinwerfer-Upgrade / Dark Look",499,["licht","schwarz","aggressiv"]],
+["LED-Seitenblinker",59,["details","licht"]],
+["Scheibentönung",179,["schwarz","optik"]],
+["Fahrzeugfolierung",1499,["folie","optik"]],
+["Premium-Folierung",2499,["folie","optik","aggressiv"]],
+["Sportfedern / Tieferlegung",349,["tiefer","fahrwerk"]],
+["Gewindefahrwerk",899,["tiefer","fahrwerk"]],
+["Sportfahrwerk",699,["tiefer","fahrwerk"]],
+["Luftfahrwerk",2499,["tiefer","fahrwerk"]],
+["Spurverbreiterungen",159,["tiefer","rad","felgen"]],
+["Felgen-Set 17 Zoll",599,["felgen","rad"]],
+["Felgen-Set 18 Zoll",799,["felgen","rad"]],
+["Felgen-Set 19 Zoll",999,["felgen","rad"]],
+["Felgen-Set 20 Zoll",1499,["felgen","rad"]],
+["Premium-Felgen-Set",1999,["felgen","rad","aggressiv"]],
+["Sportauspuff / Endschalldämpfer",499,["auspuff","sound","sportlich"]],
+["Klappenabgasanlage",1299,["auspuff","sound","aggressiv"]],
+["Sportluftfilter",89,["leistung"]],
+["Ansaugung",349,["leistung"]],
+["Chiptuning / Software",499,["leistung"]],
+["Ladeluftkühler",699,["leistung"]],
+["Downpipe",599,["leistung","auspuff"]],
+["Sportbremsanlage",1499,["bremse","sportlich","optik"]],
+["Bremsscheiben + Beläge",599,["bremse"]],
+["Sportsitze",1499,["innenraum","sportlich"]],
+["Lenkrad-Sportumbau",799,["innenraum","sportlich"]],
+["Audio-Upgrade",999,["audio","innenraum"]],
+["Premium-Soundsystem",1999,["audio","innenraum"]],
+["Innenraum-Upgrade",599,["innenraum"]],
+["Keramikversiegelung",599,["pflege"]],
+["Komplett-Aufbereitung",299,["pflege"]]
+];
 
+const quickAmounts=[1000,1500,2000,2500,3000,4000,5000,6000,7000,8000,9000,10000];
+const input=document.getElementById("budgetInput");
+const range=document.getElementById("budgetRange");
+const display=document.getElementById("budgetDisplay");
+const quickList=document.getElementById("quickList");
+let budget=2000;
 
-<script>
-(function(){
-  function addBuyButtons(){
-    document.querySelectorAll('[data-purchase-item]').forEach(el=>{
-      if(el.dataset.done) return;
-      const card=el.closest('article,.product-card,.card,.build-item,.result-card,li,div');
-      if(!card) return;
-      const raw=card.innerText||"";
-      const key=Object.keys(window.__BP_LINKS||{}).find(k=>raw.includes(k));
-      if(key){
-        const a=document.createElement('a');
-        a.className='buy-btn'; a.target='_blank'; a.rel='noopener noreferrer';
-        a.href=window.__BP_LINKS[key]; a.textContent='🛒 Teil kaufen';
-        el.replaceWith(a); el.dataset.done='1';
-      }
+const euro=n=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+
+quickAmounts.forEach(v=>{
+  const b=document.createElement("button");
+  b.className="quick"; b.dataset.v=v; b.textContent=euro(v);
+  b.onclick=()=>setBudget(v);
+  quickList.appendChild(b);
+});
+
+function setBudget(n){
+  n=Math.round(Number(n));
+  if(!Number.isFinite(n))return;
+  n=Math.max(1,Math.min(50000,n));
+  budget=n;
+  input.value=n;
+  range.value=Math.max(50,n);
+  display.textContent=euro(n);
+  document.querySelectorAll(".quick").forEach(b=>b.classList.toggle("active",+b.dataset.v===n));
+}
+input.addEventListener("input",()=>{if(input.value!=="")setBudget(input.value)});
+document.getElementById("setBudget").onclick=()=>setBudget(input.value);
+range.oninput=()=>setBudget(range.value);
+
+document.getElementById("photoInput").onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const img=document.getElementById("preview");
+  img.src=URL.createObjectURL(file); img.style.display="block";
+  document.getElementById("aiHint").style.display="block";
+};
+
+function wantedTags(text){
+  const t=text.toLowerCase();
+  const tags=[];
+  if(/tiefer|tief(er)? aussehen|boden|radhaus|stance|satt/.test(t)) tags.push("tiefer");
+  if(/felgen|räder|rad\b/.test(t)) tags.push("felgen","rad");
+  if(/sportlich|aggressiv|sportlicher/.test(t)) tags.push("sportlich");
+  if(/schwarz|black/.test(t)) tags.push("schwarz","details");
+  if(/auspuff|abgas|sound|laut/.test(t)) tags.push("auspuff","sound");
+  if(/leistung|ps|power|motor/.test(t)) tags.push("leistung");
+  if(/spoiler/.test(t)) tags.push("spoiler");
+  if(/front|stoßfänger/.test(t)) tags.push("front");
+  if(/innen|sitz|lenkrad/.test(t)) tags.push("innenraum");
+  if(/audio|musik/.test(t)) tags.push("audio");
+  if(/carbon/.test(t)) tags.push("carbon");
+  if(/folie|farbe/.test(t)) tags.push("folie","optik");
+  return [...new Set(tags)];
+}
+
+function scoreProduct(p,tags){
+  return p[2].reduce((s,x)=>s+(tags.includes(x)?4:0),0);
+}
+
+function chooseParts(target,text){
+  const t=text.toLowerCase();
+  const tags=wantedTags(text);
+
+  // Explicit wishes get highest priority.
+  // "Tiefer aussehen" is treated as a visual-design request, not automatically
+  // as a suspension request.
+  const explicit={
+    bodykit:/bodykit|body kit|komplettkit|kit/.test(t),
+    front:/frontlippe|frontspoiler|front|splitter/.test(t),
+    heck:/heckdiffusor|diffusor|heckansatz|heck/.test(t),
+    spoiler:/spoiler|flügel|wing/.test(t),
+    tiefer:/tiefer|tief(er)? aussehen|boden|stance|radhaus/.test(t),
+    felgen:/felgen|räder/.test(t),
+    fahrwerk:/fahrwerk|federn|gewindefahrwerk|luftfahrwerk/.test(t),
+    auspuff:/auspuff|abgas|sound/.test(t),
+    leistung:/leistung|ps|power|tuning/.test(t),
+    carbon:/carbon/.test(t),
+    folie:/folie|folierung/.test(t)
+  };
+
+  let pool=products.slice();
+
+  // Strongly match the user's request first.
+  if(explicit.bodykit) pool.sort((a,b)=>(b[2].includes("bodykit")?1:0)-(a[2].includes("bodykit")?1:0));
+  else if(explicit.front) pool.sort((a,b)=>(b[2].includes("front")?1:0)-(a[2].includes("front")?1:0));
+  else if(explicit.heck) pool.sort((a,b)=>(b[2].includes("heck")?1:0)-(a[2].includes("heck")?1:0));
+  else if(explicit.spoiler) pool.sort((a,b)=>(b[2].includes("spoiler")?1:0)-(a[2].includes("spoiler")?1:0));
+  else if(explicit.fahrwerk) pool.sort((a,b)=>(b[2].includes("fahrwerk")?1:0)-(a[2].includes("fahrwerk")?1:0));
+  else if(explicit.felgen) pool.sort((a,b)=>(b[2].includes("felgen")?1:0)-(a[2].includes("felgen")?1:0));
+  else {
+    // General requests: rotate between different modification families.
+    // This prevents every generic search from becoming a "felgen build".
+    const visualFamilies=["bodykit","front","heck","spoiler","tiefer","schwarz","folie","carbon","felgen","auspuff"];
+    const seed=(text.length + target) % visualFamilies.length;
+    const preferred=visualFamilies[seed];
+    pool.sort((a,b)=>{
+      const sa=(a[2].includes(preferred)?5:0)+scoreProduct(a,tags);
+      const sb=(b[2].includes(preferred)?5:0)+scoreProduct(b,tags);
+      return sb-sa;
     });
   }
-  window.__BP_LINKS = {'Frontlippe – aggressiver Look': 'https://dm-autoteile.de/tuningteile/frontspoiler', 'Große Frontlippe / Splitter': 'https://dm-autoteile.de/tuningteile/frontspoiler', 'Komplettes Bodykit': 'https://dm-autoteile.de/Bodykits', 'Widebody-Kit': 'https://dm-autoteile.de/Bodykits', 'Seitenschweller': 'https://dm-autoteile.de/Bodykits', 'Heckansatz / Heckdiffusor': 'https://dm-autoteile.de/Bodykits', 'Aggressiver Heckdiffusor': 'https://dm-autoteile.de/Bodykits', 'Heckspoiler / Dachspoiler': 'https://dm-autoteile.de/Sets', 'Großer GT-Heckflügel': 'https://dm-autoteile.de/Sets', 'Kühlergrill – Black Style': 'https://dm-autoteile.de/', 'Sportgrill / Wabengitter': 'https://dm-autoteile.de/', 'Schwarze Embleme': 'https://dm-autoteile.de/', 'Carbon-Spiegelkappen': 'https://dm-autoteile.de/', 'Carbon-Motorhaube': 'https://dm-autoteile.de/Bodykits', 'Carbon-Diffusor': 'https://dm-autoteile.de/Bodykits', 'Scheinwerfer-Upgrade / Dark Look': 'https://dm-autoteile.de/', 'LED-Seitenblinker': 'https://dm-autoteile.de/', 'Scheibentönung': 'https://dm-autoteile.de/', 'Fahrzeugfolierung': 'https://dm-autoteile.de/', 'Premium-Folierung': 'https://dm-autoteile.de/', 'Sportfedern / Tieferlegung': 'https://dm-autoteile.de/', 'Gewindefahrwerk': 'https://dm-autoteile.de/', 'Sportfahrwerk': 'https://dm-autoteile.de/', 'Luftfahrwerk': 'https://dm-autoteile.de/', 'Spurverbreiterungen': 'https://dm-autoteile.de/', 'Felgen-Set 17 Zoll': 'https://dm-autoteile.de/', 'Felgen-Set 18 Zoll': 'https://dm-autoteile.de/', 'Felgen-Set 19 Zoll': 'https://dm-autoteile.de/', 'Felgen-Set 20 Zoll': 'https://dm-autoteile.de/', 'Premium-Felgen-Set': 'https://dm-autoteile.de/', 'Sportauspuff / Endschalldämpfer': 'https://dm-autoteile.de/', 'Klappenabgasanlage': 'https://dm-autoteile.de/', 'Sportluftfilter': 'https://dm-autoteile.de/', 'Ansaugung': 'https://dm-autoteile.de/', 'Chiptuning / Software': 'https://dm-autoteile.de/', 'Ladeluftkühler': 'https://dm-autoteile.de/', 'Downpipe': 'https://dm-autoteile.de/', 'Sportbremsanlage': 'https://dm-autoteile.de/', 'Bremsscheiben + Beläge': 'https://dm-autoteile.de/', 'Sportsitze': 'https://dm-autoteile.de/', 'Lenkrad-Sportumbau': 'https://dm-autoteile.de/', 'Audio-Upgrade': 'https://dm-autoteile.de/', 'Premium-Soundsystem': 'https://dm-autoteile.de/', 'Innenraum-Upgrade': 'https://dm-autoteile.de/', 'Keramikversiegelung': 'https://dm-autoteile.de/', 'Komplett-Aufbereitung': 'https://dm-autoteile.de/'};
-  const obs=new MutationObserver(addBuyButtons);
-  obs.observe(document.documentElement,{childList:true,subtree:true});
-  setTimeout(addBuyButtons,500);
-})();
-</script>
 
+  const min=Math.max(0,target-90), max=target+90;
+  const maxUseful=Math.min(max,50000);
+
+  // Keep the selection varied: at most one item from each broad visual family
+  // before adding secondary parts.
+  const familyOf=p=>{
+    if(p[2].includes("bodykit")||p[2].includes("front")||p[2].includes("heck")) return "aero";
+    if(p[2].includes("spoiler")) return "spoiler";
+    if(p[2].includes("felgen")||p[2].includes("rad")) return "wheels";
+    if(p[2].includes("tiefer")||p[2].includes("fahrwerk")) return "suspension";
+    if(p[2].includes("auspuff")||p[2].includes("sound")) return "exhaust";
+    if(p[2].includes("leistung")) return "performance";
+    if(p[2].includes("carbon")) return "carbon";
+    if(p[2].includes("folie")) return "wrap";
+    return p[0];
+  };
+
+  const dp=new Map([[0,[]]]);
+  for(const p of pool){
+    const next=new Map(dp);
+    for(const [sum,arr] of dp){
+      if(arr.some(x=>x[0]===p[0])) continue;
+      const ns=sum+p[1];
+      if(ns<=maxUseful && !next.has(ns)) next.set(ns,[...arr,p]);
+    }
+    dp.clear(); for(const [k,v] of next) dp.set(k,v);
+    if(dp.has(target)) break;
+  }
+
+  let best=null;
+  for(const [sum,arr] of dp){
+    if(sum<min||sum>max)continue;
+    const families=new Set(arr.map(familyOf)).size;
+    const explicitBoost=arr.reduce((s,p)=>s+(
+      (explicit.bodykit&&p[2].includes("bodykit"))||
+      (explicit.front&&p[2].includes("front"))||
+      (explicit.heck&&p[2].includes("heck"))||
+      (explicit.tiefer&&p[2].includes("tiefer"))
+    ?100:0),0);
+    const quality=Math.abs(sum-target)-families*3-explicitBoost;
+    if(!best||quality<best.quality)best={sum,arr,quality};
+  }
+  if(best)return best.arr;
+
+  // Fallback: closest varied combination.
+  let chosen=[],sum=0,usedFamilies=new Set();
+  for(const p of pool){
+    const f=familyOf(p);
+    if(sum+p[1]<=max && (!usedFamilies.has(f)||chosen.length>=3)){
+      chosen.push(p);sum+=p[1];usedFamilies.add(f);
+      if(sum>=min)break;
+    }
+  }
+  return chosen;
+}
+
+
+const aiKeyInput=document.getElementById("aiKey");
+const keyStatus=document.getElementById("keyStatus");
+const savedAiKey=sessionStorage.getItem("buildplanner_ai_key")||"";
+if(savedAiKey){
+  aiKeyInput.value=savedAiKey;
+  keyStatus.textContent="✓ KI-Key ist für diese Sitzung verbunden.";
+  keyStatus.style.color="#65d8ff";
+}
+
+document.getElementById("saveAiKey").onclick=()=>{
+  const key=aiKeyInput.value.trim();
+  if(!key.startsWith("pk_")){
+    keyStatus.textContent="Bitte einen Pollinations-Publishable-Key eingeben, der mit pk_ beginnt.";
+    keyStatus.style.color="#ff9b9b";
+    return;
+  }
+  sessionStorage.setItem("buildplanner_ai_key",key);
+  keyStatus.textContent="✓ KI-Key verbunden. Er wird nur für diese Browser-Sitzung gespeichert.";
+  keyStatus.style.color="#65d8ff";
+};
+
+document.getElementById("generateImageBtn").onclick=async()=>{
+  const btn=document.getElementById("generateImageBtn");
+  const loading=document.getElementById("aiLoading");
+  const note=document.getElementById("aiSetupNote");
+  const file=document.getElementById("photoInput").files[0];
+  const apiKey=(aiKeyInput.value.trim()||sessionStorage.getItem("buildplanner_ai_key")||"").trim();
+
+  if(!file){
+    alert("Bitte zuerst ein Foto deines Autos hochladen.");
+    return;
+  }
+  if(!apiKey){
+    aiKeyInput.focus();
+    keyStatus.textContent="Bitte zuerst deinen Pollinations-Publishable-Key einfügen.";
+    keyStatus.style.color="#ff9b9b";
+    return;
+  }
+
+  const brand=document.getElementById("brand").value.trim()||"unbekannte Marke";
+  const model=document.getElementById("model").value.trim()||"unbekanntes Modell";
+  const year=document.getElementById("year").value.trim()||"unbekanntes Baujahr";
+  const changes=document.getElementById("changes").value.trim()||"aggressiver sportlicher Look";
+
+  const productNames=[...document.querySelectorAll("#productList .product strong")]
+    .map(x=>x.textContent.trim()).filter(Boolean);
+
+  const prompt =
+`Edit the supplied photograph of the user's exact car and create an extremely photorealistic professional automotive photograph.
+Vehicle: ${brand} ${model}, ${year}.
+User request: ${changes}.
+Selected build parts: ${productNames.join(", ") || "no specific parts"}.
+
+IMPORTANT:
+Keep the exact original vehicle identity, model, body proportions, wheelbase, roofline, windows, mirrors, paint color and recognizable design.
+Keep the original camera angle, perspective, framing, lighting and environment as much as possible.
+Only add the requested and selected modifications.
+If the user asks for a car that LOOKS lower, do not automatically change the suspension. Prefer visual changes such as a larger front lip, side skirts, rear diffuser, aggressive bumpers or suitable aerodynamic bodywork unless a suspension product was selected.
+If a bodykit is selected, make it physically believable and properly integrated with the original panels, with realistic gaps, reflections, shadows and material continuity.
+If carbon parts are selected, use realistic carbon-fiber texture.
+Do not randomly replace the wheels unless wheels were selected.
+Do not add unrelated modifications.
+Do not change the car into another model.
+Do not add text, people, extra cars or watermarks.
+The final result must look like a real photograph of the user's actual car after the modifications, not an illustration or CGI render.`;
+
+  const form=new FormData();
+  form.append("image",file);
+  form.append("prompt",prompt);
+  form.append("model","black-forest-labs/flux.1-kontext-pro");
+  form.append("size","1024x1024");
+  form.append("quality","high");
+  form.append("response_format","url");
+  form.append("n","1");
+
+  btn.disabled=true;
+  loading.style.display="block";
+  document.getElementById("aiPreviewText").textContent="Die KI bearbeitet jetzt dein echtes Foto…";
+  note.textContent="Die Bildbearbeitung läuft. Das kann je nach Auslastung etwas dauern.";
+
+  try{
+    const response=await fetch("https://gen.pollinations.ai/v1/images/edits",{
+      method:"POST",
+      headers:{"Authorization":"Bearer "+apiKey},
+      body:form
+    });
+
+    const raw=await response.text();
+    let data={};
+    try{data=JSON.parse(raw)}catch(e){}
+
+    if(!response.ok){
+      throw new Error(data?.error?.message || raw || ("HTTP "+response.status));
+    }
+
+    const url=data?.data?.[0]?.url;
+    if(!url) throw new Error("Die KI hat keine Bild-URL zurückgegeben.");
+
+    document.getElementById("aiPreviewImage").src=url;
+    document.getElementById("aiPreviewImageWrap").style.display="block";
+    document.getElementById("aiPreviewText").textContent="✓ Realistische KI-Vorschau erstellt.";
+    note.textContent="Die Vorschau wurde aus deinem Foto und deinem ausgewählten Build erzeugt.";
+  }catch(err){
+    console.error(err);
+    document.getElementById("aiPreviewText").textContent="❌ Die KI-Bildbearbeitung konnte nicht durchgeführt werden.";
+    note.textContent="Fehler: "+(err.message||"Unbekannter Fehler")+". Prüfe den KI-Key und deine Internetverbindung.";
+  }finally{
+    loading.style.display="none";
+    btn.disabled=false;
+  }
+};
+
+document.getElementById("build").onclick=()=>{
+  const brand=document.getElementById("brand").value.trim()||"Marke nicht angegeben";
+  const model=document.getElementById("model").value.trim()||"Modell nicht angegeben";
+  const year=document.getElementById("year").value.trim()||"Baujahr nicht angegeben";
+  const changes=document.getElementById("changes").value.trim()||"Keine Änderungen angegeben";
+
+  const chosen=chooseParts(budget,changes);
+  const total=chosen.reduce((s,p)=>s+p[1],0);
+  const deviation=total-budget;
+
+  document.getElementById("sumCar").textContent=brand+" "+model+" · "+year;
+  document.getElementById("sumBudget").textContent=euro(budget);
+  document.getElementById("sumChanges").textContent=changes;
+  document.getElementById("sumDeviation").textContent=(deviation>=0?"+":"")+euro(deviation);
+
+  const list=document.getElementById("productList");
+  list.innerHTML="";
+  chosen.forEach(p=>{
+    const row=document.createElement("div");
+    row.className="product";
+    row.innerHTML="<div><strong>"+p[0]+"</strong><small>Passende Build-Idee · Beispielpreis</small></div><div class='price'>"+euro(p[1])+"</div>";
+    list.appendChild(row);
+  });
+  document.getElementById("total").textContent=euro(total);
+  document.getElementById("status").textContent=chosen.length
+    ?"✓ Build wurde erstellt."
+    :"Für dieses Budget konnte mit den aktuellen Demo-Produkten keine passende Kombination gefunden werden.";
+
+  const r=document.getElementById("result"); r.style.display="block";
+  setTimeout(()=>r.scrollIntoView({behavior:"smooth"}),100);
+};
+</script>
 </body>
 </html>
