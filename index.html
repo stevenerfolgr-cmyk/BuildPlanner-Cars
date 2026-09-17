@@ -99,6 +99,22 @@ textarea{min-height:130px;resize:vertical}
 
 <section class="card result" id="result">
 <h2>🔥 Dein Build</h2>
+
+<div id="aiPreviewCard" style="margin:18px 0;padding:18px;border:1px solid #303844;border-radius:16px;background:#0a0f15">
+  <h3 style="margin-top:0">🤖 Realistische KI-Bildvorschau</h3>
+  <p id="aiPreviewText" style="color:#9da7b3;line-height:1.5">
+    Lade zuerst dein Auto-Foto hoch und erstelle anschließend deinen Build.
+    Danach kann hier eine realistische Visualisierung mit den ausgewählten Umbauten erscheinen.
+  </p>
+  <div id="aiPreviewImageWrap" style="display:none">
+    <img id="aiPreviewImage" style="width:100%;max-height:650px;object-fit:contain;border-radius:14px" alt="KI-generierte Vorschau deines Auto-Builds">
+  </div>
+  <button id="generateImageBtn" class="build" style="display:none;margin-top:14px">🎨 KI-Bild erstellen</button>
+  <div id="aiLoading" style="display:none;color:#65d8ff;font-weight:bold;margin-top:12px">⏳ KI-Bild wird vorbereitet…</div>
+  <div id="aiSetupNote" style="margin-top:12px;color:#737e8b;font-size:12px;line-height:1.5">
+    Hinweis: Eine echte KI-Bildgenerierung benötigt einen sicheren Server/API-Endpunkt. Der API-Schlüssel darf nicht direkt in diese HTML-Datei eingebaut werden.
+  </div>
+</div>
 <div class="summary">
 <div class="box"><span>Fahrzeug</span><strong id="sumCar"></strong></div>
 <div class="box"><span>Budget</span><strong id="sumBudget"></strong></div>
@@ -367,9 +383,67 @@ document.getElementById("build").onclick=()=>{
     ?"✓ Build wurde erstellt."
     :"Für dieses Budget konnte mit den aktuellen Demo-Produkten keine passende Kombination gefunden werden.";
 
+  const imageBtn=document.getElementById("generateImageBtn");
+  imageBtn.style.display="block";
+  imageBtn.dataset.prompt = [
+    "Create an extremely photorealistic automotive modification preview.",
+    "Use the user's uploaded car photo as the exact base vehicle.",
+    "Preserve the exact car identity, body shape, proportions, paint color, windows, lighting direction and camera perspective.",
+    "Only add the selected modifications realistically and physically.",
+    "Selected modifications: "+chosen.map(p=>p[0]).join(", ")+".",
+    "User request: "+changes+".",
+    "The result should look like a real professional automotive photograph, realistic materials, realistic shadows, reflections and panel fitment.",
+    "Do not change the vehicle into another model. Do not add random wheels or modifications that were not selected.",
+    "Show a clean, believable finished build."
+  ].join(" ");
+  document.getElementById("aiPreviewText").textContent =
+    "Dein Build ist vorbereitet. Klicke auf „KI-Bild erstellen“, um die Visualisierung anzustoßen.";
+
   const r=document.getElementById("result"); r.style.display="block";
   setTimeout(()=>r.scrollIntoView({behavior:"smooth"}),100);
 };
+document.getElementById("generateImageBtn").onclick=async()=>{
+  const btn=document.getElementById("generateImageBtn");
+  const loading=document.getElementById("aiLoading");
+  const note=document.getElementById("aiSetupNote");
+  const file=document.getElementById("photoInput").files[0];
+
+  if(!file){
+    alert("Bitte zuerst ein Foto deines Autos hochladen.");
+    return;
+  }
+
+  // The static GitHub Pages version cannot safely contain an API secret.
+  // It sends the image + prompt to a serverless endpoint when one is configured.
+  const form=new FormData();
+  form.append("image",file);
+  form.append("prompt",btn.dataset.prompt||"Create a photorealistic modified version of this exact car.");
+
+  btn.disabled=true;
+  loading.style.display="block";
+  note.textContent="Die Anfrage wird an deinen sicheren KI-Endpunkt gesendet.";
+
+  try{
+    const response=await fetch("/api/generate-image",{method:"POST",body:form});
+    if(!response.ok) throw new Error("KI-Endpunkt nicht eingerichtet.");
+    const data=await response.json();
+    if(!data.imageUrl) throw new Error("Keine Bild-URL zurückgegeben.");
+
+    document.getElementById("aiPreviewImage").src=data.imageUrl;
+    document.getElementById("aiPreviewImageWrap").style.display="block";
+    document.getElementById("aiPreviewText").textContent="✓ Realistische KI-Vorschau erstellt.";
+    note.textContent="Die Vorschau basiert auf deinem hochgeladenen Foto und den ausgewählten Umbauten.";
+  }catch(err){
+    document.getElementById("aiPreviewText").textContent=
+      "Die Bildvorschau ist vorbereitet, aber der sichere KI-Server ist in dieser statischen GitHub-Pages-Version noch nicht verbunden.";
+    note.textContent=
+      "Für die echte Generierung muss /api/generate-image mit einem Bild-KI-Dienst verbunden werden. Der API-Schlüssel gehört ausschließlich auf den Server, nicht in index.html.";
+  }finally{
+    loading.style.display="none";
+    btn.disabled=false;
+  }
+};
+
 </script>
 </body>
 </html>
