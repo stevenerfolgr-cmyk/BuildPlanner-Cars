@@ -103,16 +103,30 @@ textarea{min-height:130px;resize:vertical}
 <div id="aiPreviewCard" style="margin:18px 0;padding:18px;border:1px solid #303844;border-radius:16px;background:#0a0f15">
   <h3 style="margin-top:0">🤖 Realistische KI-Bildvorschau</h3>
   <p id="aiPreviewText" style="color:#9da7b3;line-height:1.5">
-    Lade zuerst dein Auto-Foto hoch und erstelle anschließend deinen Build.
-    Danach kann hier eine realistische Visualisierung mit den ausgewählten Umbauten erscheinen.
+    Dein hochgeladenes Auto wird mit den ausgewählten Umbauten bearbeitet.
   </p>
-  <div id="aiPreviewImageWrap" style="display:none">
-    <img id="aiPreviewImage" style="width:100%;max-height:650px;object-fit:contain;border-radius:14px" alt="KI-generierte Vorschau deines Auto-Builds">
+
+  <div id="aiKeyBox" style="margin:14px 0;padding:14px;border:1px solid #39424d;border-radius:12px;background:#10151c">
+    <strong>🔑 KI verbinden</strong>
+    <p style="color:#9da7b3;font-size:13px;line-height:1.5">
+      Für die echte Bildbearbeitung braucht die Webseite einen <b>Pollinations-Publishable-Key</b>.
+      Dieser Key ist für Browser-Apps vorgesehen. <b>Keinen sk_-Secret-Key eintragen.</b>
+    </p>
+    <input id="aiKey" type="password" placeholder="pk_… Publishable Key einfügen" autocomplete="off">
+    <button id="saveAiKey" class="small" style="margin-top:9px">KI-Key speichern</button>
+    <div id="keyStatus" style="margin-top:8px;color:#7f8995;font-size:12px"></div>
   </div>
-  <button id="generateImageBtn" class="build" style="display:none;margin-top:14px">🎨 KI-Bild erstellen</button>
-  <div id="aiLoading" style="display:none;color:#65d8ff;font-weight:bold;margin-top:12px">⏳ KI-Bild wird vorbereitet…</div>
+
+  <div id="aiPreviewImageWrap" style="display:none">
+    <img id="aiPreviewImage" style="width:100%;max-height:700px;object-fit:contain;border-radius:14px" alt="Realistische KI-Vorschau deines Auto-Builds">
+  </div>
+
+  <button id="generateImageBtn" class="build" style="margin-top:14px">🎨 KI-Bild erstellen</button>
+  <div id="aiLoading" style="display:none;color:#65d8ff;font-weight:bold;margin-top:12px">
+    ⏳ Dein Auto wird mit den ausgewählten Umbauten bearbeitet…
+  </div>
   <div id="aiSetupNote" style="margin-top:12px;color:#737e8b;font-size:12px;line-height:1.5">
-    Hinweis: Eine echte KI-Bildgenerierung benötigt einen sicheren Server/API-Endpunkt. Der API-Schlüssel darf nicht direkt in diese HTML-Datei eingebaut werden.
+    Die KI bearbeitet dein echtes Foto und versucht Fahrzeugmodell, Farbe, Perspektive und Umgebung zu erhalten.
   </div>
 </div>
 <div class="summary">
@@ -355,6 +369,119 @@ function chooseParts(target,text){
   return chosen;
 }
 
+
+const aiKeyInput=document.getElementById("aiKey");
+const keyStatus=document.getElementById("keyStatus");
+const savedAiKey=sessionStorage.getItem("buildplanner_ai_key")||"";
+if(savedAiKey){
+  aiKeyInput.value=savedAiKey;
+  keyStatus.textContent="✓ KI-Key ist für diese Sitzung verbunden.";
+  keyStatus.style.color="#65d8ff";
+}
+
+document.getElementById("saveAiKey").onclick=()=>{
+  const key=aiKeyInput.value.trim();
+  if(!key.startsWith("pk_")){
+    keyStatus.textContent="Bitte einen Pollinations-Publishable-Key eingeben, der mit pk_ beginnt.";
+    keyStatus.style.color="#ff9b9b";
+    return;
+  }
+  sessionStorage.setItem("buildplanner_ai_key",key);
+  keyStatus.textContent="✓ KI-Key verbunden. Er wird nur für diese Browser-Sitzung gespeichert.";
+  keyStatus.style.color="#65d8ff";
+};
+
+document.getElementById("generateImageBtn").onclick=async()=>{
+  const btn=document.getElementById("generateImageBtn");
+  const loading=document.getElementById("aiLoading");
+  const note=document.getElementById("aiSetupNote");
+  const file=document.getElementById("photoInput").files[0];
+  const apiKey=(aiKeyInput.value.trim()||sessionStorage.getItem("buildplanner_ai_key")||"").trim();
+
+  if(!file){
+    alert("Bitte zuerst ein Foto deines Autos hochladen.");
+    return;
+  }
+  if(!apiKey){
+    aiKeyInput.focus();
+    keyStatus.textContent="Bitte zuerst deinen Pollinations-Publishable-Key einfügen.";
+    keyStatus.style.color="#ff9b9b";
+    return;
+  }
+
+  const brand=document.getElementById("brand").value.trim()||"unbekannte Marke";
+  const model=document.getElementById("model").value.trim()||"unbekanntes Modell";
+  const year=document.getElementById("year").value.trim()||"unbekanntes Baujahr";
+  const changes=document.getElementById("changes").value.trim()||"aggressiver sportlicher Look";
+
+  const productNames=[...document.querySelectorAll("#productList .product strong")]
+    .map(x=>x.textContent.trim()).filter(Boolean);
+
+  const prompt =
+`Edit the supplied photograph of the user's exact car and create an extremely photorealistic professional automotive photograph.
+Vehicle: ${brand} ${model}, ${year}.
+User request: ${changes}.
+Selected build parts: ${productNames.join(", ") || "no specific parts"}.
+
+IMPORTANT:
+Keep the exact original vehicle identity, model, body proportions, wheelbase, roofline, windows, mirrors, paint color and recognizable design.
+Keep the original camera angle, perspective, framing, lighting and environment as much as possible.
+Only add the requested and selected modifications.
+If the user asks for a car that LOOKS lower, do not automatically change the suspension. Prefer visual changes such as a larger front lip, side skirts, rear diffuser, aggressive bumpers or suitable aerodynamic bodywork unless a suspension product was selected.
+If a bodykit is selected, make it physically believable and properly integrated with the original panels, with realistic gaps, reflections, shadows and material continuity.
+If carbon parts are selected, use realistic carbon-fiber texture.
+Do not randomly replace the wheels unless wheels were selected.
+Do not add unrelated modifications.
+Do not change the car into another model.
+Do not add text, people, extra cars or watermarks.
+The final result must look like a real photograph of the user's actual car after the modifications, not an illustration or CGI render.`;
+
+  const form=new FormData();
+  form.append("image",file);
+  form.append("prompt",prompt);
+  form.append("model","black-forest-labs/flux.1-kontext-pro");
+  form.append("size","1024x1024");
+  form.append("quality","high");
+  form.append("response_format","url");
+  form.append("n","1");
+
+  btn.disabled=true;
+  loading.style.display="block";
+  document.getElementById("aiPreviewText").textContent="Die KI bearbeitet jetzt dein echtes Foto…";
+  note.textContent="Die Bildbearbeitung läuft. Das kann je nach Auslastung etwas dauern.";
+
+  try{
+    const response=await fetch("https://gen.pollinations.ai/v1/images/edits",{
+      method:"POST",
+      headers:{"Authorization":"Bearer "+apiKey},
+      body:form
+    });
+
+    const raw=await response.text();
+    let data={};
+    try{data=JSON.parse(raw)}catch(e){}
+
+    if(!response.ok){
+      throw new Error(data?.error?.message || raw || ("HTTP "+response.status));
+    }
+
+    const url=data?.data?.[0]?.url;
+    if(!url) throw new Error("Die KI hat keine Bild-URL zurückgegeben.");
+
+    document.getElementById("aiPreviewImage").src=url;
+    document.getElementById("aiPreviewImageWrap").style.display="block";
+    document.getElementById("aiPreviewText").textContent="✓ Realistische KI-Vorschau erstellt.";
+    note.textContent="Die Vorschau wurde aus deinem Foto und deinem ausgewählten Build erzeugt.";
+  }catch(err){
+    console.error(err);
+    document.getElementById("aiPreviewText").textContent="❌ Die KI-Bildbearbeitung konnte nicht durchgeführt werden.";
+    note.textContent="Fehler: "+(err.message||"Unbekannter Fehler")+". Prüfe den KI-Key und deine Internetverbindung.";
+  }finally{
+    loading.style.display="none";
+    btn.disabled=false;
+  }
+};
+
 document.getElementById("build").onclick=()=>{
   const brand=document.getElementById("brand").value.trim()||"Marke nicht angegeben";
   const model=document.getElementById("model").value.trim()||"Modell nicht angegeben";
@@ -383,67 +510,9 @@ document.getElementById("build").onclick=()=>{
     ?"✓ Build wurde erstellt."
     :"Für dieses Budget konnte mit den aktuellen Demo-Produkten keine passende Kombination gefunden werden.";
 
-  const imageBtn=document.getElementById("generateImageBtn");
-  imageBtn.style.display="block";
-  imageBtn.dataset.prompt = [
-    "Create an extremely photorealistic automotive modification preview.",
-    "Use the user's uploaded car photo as the exact base vehicle.",
-    "Preserve the exact car identity, body shape, proportions, paint color, windows, lighting direction and camera perspective.",
-    "Only add the selected modifications realistically and physically.",
-    "Selected modifications: "+chosen.map(p=>p[0]).join(", ")+".",
-    "User request: "+changes+".",
-    "The result should look like a real professional automotive photograph, realistic materials, realistic shadows, reflections and panel fitment.",
-    "Do not change the vehicle into another model. Do not add random wheels or modifications that were not selected.",
-    "Show a clean, believable finished build."
-  ].join(" ");
-  document.getElementById("aiPreviewText").textContent =
-    "Dein Build ist vorbereitet. Klicke auf „KI-Bild erstellen“, um die Visualisierung anzustoßen.";
-
   const r=document.getElementById("result"); r.style.display="block";
   setTimeout(()=>r.scrollIntoView({behavior:"smooth"}),100);
 };
-document.getElementById("generateImageBtn").onclick=async()=>{
-  const btn=document.getElementById("generateImageBtn");
-  const loading=document.getElementById("aiLoading");
-  const note=document.getElementById("aiSetupNote");
-  const file=document.getElementById("photoInput").files[0];
-
-  if(!file){
-    alert("Bitte zuerst ein Foto deines Autos hochladen.");
-    return;
-  }
-
-  // The static GitHub Pages version cannot safely contain an API secret.
-  // It sends the image + prompt to a serverless endpoint when one is configured.
-  const form=new FormData();
-  form.append("image",file);
-  form.append("prompt",btn.dataset.prompt||"Create a photorealistic modified version of this exact car.");
-
-  btn.disabled=true;
-  loading.style.display="block";
-  note.textContent="Die Anfrage wird an deinen sicheren KI-Endpunkt gesendet.";
-
-  try{
-    const response=await fetch("/api/generate-image",{method:"POST",body:form});
-    if(!response.ok) throw new Error("KI-Endpunkt nicht eingerichtet.");
-    const data=await response.json();
-    if(!data.imageUrl) throw new Error("Keine Bild-URL zurückgegeben.");
-
-    document.getElementById("aiPreviewImage").src=data.imageUrl;
-    document.getElementById("aiPreviewImageWrap").style.display="block";
-    document.getElementById("aiPreviewText").textContent="✓ Realistische KI-Vorschau erstellt.";
-    note.textContent="Die Vorschau basiert auf deinem hochgeladenen Foto und den ausgewählten Umbauten.";
-  }catch(err){
-    document.getElementById("aiPreviewText").textContent=
-      "Die Bildvorschau ist vorbereitet, aber der sichere KI-Server ist in dieser statischen GitHub-Pages-Version noch nicht verbunden.";
-    note.textContent=
-      "Für die echte Generierung muss /api/generate-image mit einem Bild-KI-Dienst verbunden werden. Der API-Schlüssel gehört ausschließlich auf den Server, nicht in index.html.";
-  }finally{
-    loading.style.display="none";
-    btn.disabled=false;
-  }
-};
-
 </script>
 </body>
 </html>
