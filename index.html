@@ -122,6 +122,7 @@ textarea{min-height:130px;resize:vertical}
   </div>
 
   <button id="generateImageBtn" class="build" style="margin-top:14px">🎨 KI-Bild erstellen</button>
+  <div style="margin-top:8px;color:#737e8b;font-size:12px">Das hochgeladene Foto wird direkt als Referenz an die Bildbearbeitung gesendet.</div>
   <div id="aiLoading" style="display:none;color:#65d8ff;font-weight:bold;margin-top:12px">
     ⏳ Dein Auto wird mit den ausgewählten Umbauten bearbeitet…
   </div>
@@ -402,6 +403,10 @@ document.getElementById("generateImageBtn").onclick=async()=>{
     alert("Bitte zuerst ein Foto deines Autos hochladen.");
     return;
   }
+  if(!file.type || !file.type.startsWith("image/")){
+    alert("Bitte eine Bilddatei (JPG, PNG, WebP usw.) auswählen.");
+    return;
+  }
   if(!apiKey){
     aiKeyInput.focus();
     keyStatus.textContent="Bitte zuerst deinen Pollinations-Publishable-Key einfügen.";
@@ -439,10 +444,10 @@ The final result must look like a real photograph of the user's actual car after
   const form=new FormData();
   form.append("image",file);
   form.append("prompt",prompt);
-  form.append("model","black-forest-labs/flux.1-kontext-pro");
+  form.append("model","kontext");
   form.append("size","1024x1024");
   form.append("quality","high");
-  form.append("response_format","url");
+  form.append("response_format","b64_json");
   form.append("n","1");
 
   btn.disabled=true;
@@ -462,11 +467,17 @@ The final result must look like a real photograph of the user's actual car after
     try{data=JSON.parse(raw)}catch(e){}
 
     if(!response.ok){
-      throw new Error(data?.error?.message || raw || ("HTTP "+response.status));
+      const serverMessage=data?.error?.message || data?.message || raw;
+      throw new Error(serverMessage || ("HTTP "+response.status));
     }
 
-    const url=data?.data?.[0]?.url;
-    if(!url) throw new Error("Die KI hat keine Bild-URL zurückgegeben.");
+    const result=data?.data?.[0] || {};
+    let url=result?.url || "";
+    const b64=result?.b64_json || result?.b64 || "";
+    if(!url && b64){
+      url="data:image/png;base64,"+b64;
+    }
+    if(!url) throw new Error("Die KI hat kein bearbeitetes Bild zurückgegeben.");
 
     document.getElementById("aiPreviewImage").src=url;
     document.getElementById("aiPreviewImageWrap").style.display="block";
