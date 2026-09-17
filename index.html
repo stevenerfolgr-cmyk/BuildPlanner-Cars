@@ -5,164 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BuildPlanner Cars</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#0b0d10;color:#fff;min-height:100vh}
-header{padding:20px;border-bottom:1px solid #25282d;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:rgba(11,13,16,.95);backdrop-filter:blur(10px);z-index:10}
-.logo{font-size:22px;font-weight:800}.logo span{color:#4da3ff}
-.saved{background:#181b20;border:1px solid #30343b;color:#fff;padding:10px 15px;border-radius:10px;cursor:pointer}
-main{max-width:1100px;margin:auto;padding:35px 20px 60px}
-.hero{text-align:center;padding:25px 0 35px}.hero h1{font-size:clamp(36px,7vw,68px);line-height:1;margin-bottom:18px}.hero h1 span{color:#4da3ff}
-.hero p{color:#a7adb6;font-size:17px;max-width:650px;margin:auto;line-height:1.5}
-.card{background:#13161a;border:1px solid #292d33;border-radius:20px;padding:25px;margin-bottom:20px}.card h2{font-size:22px;margin-bottom:20px}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.field{display:flex;flex-direction:column;gap:8px}
-label{color:#b8bec7;font-size:14px}
-input,select,textarea{width:100%;background:#0c0f12;border:1px solid #343940;color:#fff;padding:14px;border-radius:10px;font-size:16px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:#4da3ff}textarea{min-height:110px;resize:vertical}
-.upload-box{border:2px dashed #3a414b;border-radius:15px;padding:35px 20px;text-align:center;cursor:pointer;transition:.2s;display:block}
-.upload-box:hover{border-color:#4da3ff;background:#10151b}.upload-icon{font-size:40px;margin-bottom:10px}.upload-box p{color:#a7adb6;margin-top:8px}
-#photoInput{display:none}#imagePreview{display:none;width:100%;max-height:400px;object-fit:cover;border-radius:15px;margin-top:15px}
-.budget-row{display:flex;align-items:center;gap:15px}.budget-row input[type=range]{padding:0;accent-color:#4da3ff}
-.budget-value{min-width:100px;text-align:right;font-size:20px;font-weight:bold;color:#4da3ff}
-.build-button{width:100%;border:none;background:#4da3ff;color:#fff;padding:17px;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;transition:.2s;margin-top:10px}
-.build-button:hover{transform:translateY(-2px);filter:brightness(1.08)}
-.result{display:none}.result-image{width:100%;height:350px;background:linear-gradient(135deg,#1a2028,#0d1014);border-radius:15px;display:flex;align-items:center;justify-content:center;text-align:center;color:#8e959f;padding:30px;margin-bottom:20px}
-.result-image strong{display:block;color:#fff;font-size:22px;margin-bottom:8px}
-.parts{display:grid;gap:12px}.part{background:#0d1013;border:1px solid #292e35;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:15px}
-.part-name{font-weight:bold}.part-info{color:#9299a3;font-size:14px;margin-top:5px}.price{color:#4da3ff;font-weight:bold;white-space:nowrap}
-.total{margin-top:18px;padding-top:18px;border-top:1px solid #292e35;display:flex;justify-content:space-between;font-size:21px;font-weight:bold}
-.notice{color:#858c96;font-size:12px;margin-top:15px;line-height:1.5}
-footer{text-align:center;padding:30px 20px;color:#626872;font-size:13px;border-top:1px solid #202329}
-@media(max-width:700px){.form-grid{grid-template-columns:1fr}.card{padding:18px}.part{flex-direction:column;align-items:flex-start}.price{font-size:18px}.budget-row{flex-direction:column;align-items:stretch}.budget-value{text-align:left}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#080b10;color:#fff}header{padding:16px 22px;background:#090d13;border-bottom:1px solid #29313b;display:flex;justify-content:space-between}.logo{font-size:21px;font-weight:800}.logo span{color:#65d8ff}.saved,.small,.quick{background:#151b23;color:#fff;border:1px solid #39424d;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}.quick{border-radius:999px;padding:8px 12px}.quick.active,.quick:hover,.small:hover{border-color:#65d8ff;color:#65d8ff}main{max-width:1100px;margin:auto;padding:25px 16px 60px}.hero{text-align:center;padding:40px 5px}.hero h1{font-size:clamp(40px,7vw,70px);margin:0}.hero h1 span{color:#65d8ff}.hero p{color:#adb7c3;font-size:17px;line-height:1.5}.card{background:#10151c;border:1px solid #2c343e;border-radius:18px;padding:22px;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.field label{display:block;color:#adb7c3;font-size:14px;font-weight:bold;margin-bottom:8px}input,select,textarea{width:100%;background:#0a0f15;color:#fff;border:1px solid #3a434e;border-radius:11px;padding:14px;font-size:16px;outline:0}textarea{min-height:130px;resize:vertical}.upload{display:block;margin-top:16px;padding:30px;text-align:center;border:2px dashed #3a434e;border-radius:15px;background:#0d1219;cursor:pointer}.upload strong{display:block;font-size:18px;margin-bottom:7px}.upload small{color:#9ca7b4}#photoInput{display:none}.preview{display:none;width:100%;max-height:380px;object-fit:contain;margin-top:15px;border-radius:14px}.budgettop{display:flex;justify-content:space-between;align-items:center}.budgetvalue{font-size:25px;font-weight:800;color:#65d8ff}.budgetrow{display:flex;gap:10px;margin-top:12px}.budgetrow input{flex:1}.quicktitle{color:#adb7c3;font-size:14px;font-weight:bold;margin:18px 0 9px}.quicklist{display:flex;flex-wrap:wrap;gap:8px}.suggest{display:none;margin-top:10px}.suggest button{width:100%;padding:13px;background:#10232d;color:#fff;border:1px solid #65d8ff;border-radius:11px;text-align:left;font-weight:bold;cursor:pointer}.range{width:100%;margin-top:18px;accent-color:#65d8ff}.build{width:100%;margin-top:22px;padding:17px;border:0;border-radius:13px;background:#65d8ff;color:#071017;font-size:18px;font-weight:900;cursor:pointer}.status{color:#65d8ff;font-weight:bold;margin-top:12px}.result{display:none}.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#0a0f15;border:1px solid #303844;border-radius:12px;padding:16px}.box span{display:block;color:#929dab;font-size:13px;margin-bottom:5px}.products{margin-top:22px}.product{display:flex;justify-content:space-between;padding:15px 0;border-bottom:1px solid #292f38}.product small{display:block;color:#929dab;margin-top:4px}.price{color:#65d8ff;font-weight:900}.total{display:flex;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid #39414c;font-size:22px;font-weight:900}.note{color:#929dab;font-size:13px;line-height:1.5;margin-top:14px}footer{text-align:center;color:#737d89;border-top:1px solid #242a33;padding:25px}@media(max-width:750px){.grid,.summary{grid-template-columns:1fr}main{padding:15px 12px 45px}.card{padding:17px}}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">BuildPlanner <span>Cars</span></div>
-<button class="saved" onclick="showSaved()">❤️ Builds</button>
-</header>
-
+<header><div class="logo">BuildPlanner <span>Cars</span></div><button class="saved" onclick="document.getElementById('result').scrollIntoView({behavior:'smooth'})">❤️ Builds</button></header>
 <main>
-<section class="hero">
-<h1>Dein Auto.<br><span>Dein Build.</span></h1>
-<p>Lade dein Auto hoch, beschreibe deinen Wunsch-Build und finde heraus, wie dein Auto aussehen könnte.</p>
-</section>
-
-<section class="card">
-<h2>🚗 1. Dein Auto</h2>
-<div class="form-grid">
-<div class="field">
-<label>Automarke</label>
-<select id="brand">
-<option value="">Marke auswählen</option>
-<option>BMW</option><option>Mercedes-Benz</option><option>Audi</option>
-<option>Volkswagen</option><option>Opel</option><option>Ford</option>
-<option>Seat</option><option>Skoda</option><option>Toyota</option>
-<option>Nissan</option><option>Honda</option><option>Hyundai</option>
-<option>Kia</option><option>Peugeot</option><option>Renault</option><option>Andere</option>
-</select>
-</div>
-<div class="field"><label>Modell</label><input type="text" id="model" placeholder="z.B. Golf 7 GTI"></div>
-<div class="field"><label>Baujahr</label><input type="number" id="year" placeholder="z.B. 2018" min="1950" max="2030"></div>
-</div>
-</section>
-
-<section class="card">
-<h2>📸 2. Foto deines Autos</h2>
-<label for="photoInput" class="upload-box">
-<div class="upload-icon">📷</div>
-<strong>Foto auswählen</strong>
-<p>Lade ein Foto von deinem eigenen Auto hoch.</p>
-</label>
-<input type="file" id="photoInput" accept="image/*">
-<img id="imagePreview" alt="Auto Vorschau">
-</section>
-
-<section class="card">
-<h2>🎨 3. Was möchtest du verändern?</h2>
-<div class="field">
-<label>Beschreibe deinen gewünschten Build</label>
-<textarea id="changes" placeholder="z.B. sportlicher Look, schwarze Felgen, tieferlegen, schwarze Scheiben, aggressivere Front und dezenter Heckspoiler..."></textarea>
-</div>
-</section>
-
-<section class="card">
-<h2>💰 4. Dein Budget</h2>
-<div class="budget-row">
-<input type="range" id="budget" min="500" max="20000" step="500" value="5000">
-<div class="budget-value" id="budgetValue">5.000 €</div>
-</div>
-</section>
-
-<section class="card">
-<button class="build-button" onclick="createBuild()">✨ Build erstellen</button>
-</section>
-
-<section class="card result" id="result">
-<h2>🔥 Dein Build</h2>
-<div class="result-image" id="resultImage">
-<div><strong>KI-Vorschau</strong><span>Hier wird später dein eigenes Auto mit den gewünschten Veränderungen realistisch dargestellt.</span></div>
-</div>
-<h2>🛠️ Passende Produkte</h2>
-<div class="parts">
-<div class="part"><div><div class="part-name">Sportliche Alufelgen</div><div class="part-info">Beispielprodukt · 18 Zoll</div></div><div class="price">899 €</div></div>
-<div class="part"><div><div class="part-name">Sportfahrwerk</div><div class="part-info">Beispielprodukt · Tieferlegung</div></div><div class="price">649 €</div></div>
-<div class="part"><div><div class="part-name">Heckspoiler</div><div class="part-info">Beispielprodukt · passend zum Fahrzeug</div></div><div class="price">299 €</div></div>
-</div>
-<div class="total"><span>Geschätzte Kosten</span><span id="totalPrice">1.847 €</span></div>
-<p class="notice">Die KI-Vorschau dient nur zur Visualisierung. Produkte und Preise werden in einer späteren Version mit echten Angeboten und Händlerlinks verbunden.</p>
-</section>
-</main>
-
-<footer>BuildPlanner Cars · Dein Auto. Dein Build.</footer>
-
+<section class="hero"><h1>Dein Auto.<br><span>Dein Build.</span></h1><p>Lade dein Auto hoch, beschreibe deinen Wunsch-Build und finde heraus, wie dein Auto aussehen könnte.</p></section>
+<section class="card"><h2>🚗 Dein Auto</h2><div class="grid">
+<div class="field"><label>Marke</label><select id="brand"><option value="">Marke auswählen</option><option>BMW</option><option>Audi</option><option>Mercedes-Benz</option><option>Volkswagen</option><option>Ford</option><option>Opel</option><option>Seat</option><option>Skoda</option><option>Honda</option><option>Toyota</option><option>Nissan</option><option>Hyundai</option><option>Andere</option></select></div>
+<div class="field"><label>Modell</label><input id="model" placeholder="z.B. Golf 7 GTI"></div>
+<div class="field"><label>Baujahr</label><input id="year" type="number" placeholder="z.B. 2018"></div></div>
+<label class="upload" for="photoInput"><strong>📷 Foto auswählen</strong><small>Lade ein Foto von deinem eigenen Auto hoch.</small><input id="photoInput" type="file" accept="image/*"></label><img id="photoPreview" class="preview" alt="Auto Vorschau"></section>
+<section class="card"><h2>🎨 Was möchtest du verändern?</h2><textarea id="changes" placeholder="z.B. sportlicher Look, schwarze Felgen, tieferlegen, schwarze Details, Spoiler..."></textarea></section>
+<section class="card"><h2>💰 Dein Budget</h2>
+<div class="budgettop"><strong>Maximales Budget</strong><div class="budgetvalue" id="budgetDisplay">2.000 €</div></div>
+<div class="budgetrow"><input id="budgetInput" type="number" min="1" max="10000" step="1" value="2000" placeholder="Budget eingeben"><button class="small" id="setBudget">Übernehmen</button></div>
+<div class="quicktitle">Schnellauswahl</div><div class="quicklist" id="quickList"></div>
+<div class="suggest" id="suggest"><button id="suggestButton"></button></div>
+<input class="range" id="budgetRange" type="range" min="1" max="10000" step="1" value="2000">
+<div class="note">Jeder Betrag von <strong>1 € bis 10.000 €</strong> ist möglich. Wenn du eine Zahl eintippst, kannst du genau diese Summe anschließend anklicken.</div>
+<button class="build" id="build">✨ Build erstellen</button><div class="status" id="status"></div></section>
+<section class="card result" id="result"><h2>🔥 Dein Build</h2><div class="summary">
+<div class="box"><span>Auto</span><strong id="sumCar">–</strong></div><div class="box"><span>Budget</span><strong id="sumBudget">–</strong></div><div class="box" style="grid-column:1/-1"><span>Wunsch-Build</span><strong id="sumChanges">–</strong></div></div>
+<div class="products"><h2 style="font-size:20px">🛠️ Beispielhafte Build-Teile</h2>
+<div class="product"><div><strong>Sportfedern / Tieferlegung</strong><small>Beispielpreis</small></div><div class="price" data-price="899">899 €</div></div>
+<div class="product"><div><strong>Sportfelgen</strong><small>Beispielpreis</small></div><div class="price" data-price="649">649 €</div></div>
+<div class="product"><div><strong>Sportlicher Spoiler / Anbauteil</strong><small>Beispielpreis</small></div><div class="price" data-price="299">299 €</div></div></div>
+<div class="total"><span>Gesamtsumme</span><span id="total">1.847 €</span></div>
+<div class="note">Die Produkte und Preise sind momentan Demo-Daten. Später werden hier echte Produkte, aktuelle Preise und Händlerlinks eingebunden.</div></section>
+</main><footer>BuildPlanner Cars · Dein Auto. Dein Build.</footer>
 <script>
-const budget=document.getElementById("budget");
-const budgetValue=document.getElementById("budgetValue");
-budget.addEventListener("input",function(){
-budgetValue.textContent=Number(this.value).toLocaleString("de-DE")+" €";
-});
-
-const photoInput=document.getElementById("photoInput");
-const imagePreview=document.getElementById("imagePreview");
-photoInput.addEventListener("change",function(){
-const file=this.files[0];
-if(!file)return;
-const reader=new FileReader();
-reader.onload=function(event){
-imagePreview.src=event.target.result;
-imagePreview.style.display="block";
-};
-reader.readAsDataURL(file);
-});
-
-function createBuild(){
-const brand=document.getElementById("brand").value;
-const model=document.getElementById("model").value;
-const year=document.getElementById("year").value;
-const changes=document.getElementById("changes").value;
-const selectedBudget=Number(document.getElementById("budget").value);
-
-if(!brand){alert("Bitte wähle zuerst deine Automarke aus.");return;}
-if(!model){alert("Bitte gib dein Automodell ein.");return;}
-if(!changes){alert("Beschreibe zuerst deinen gewünschten Build.");return;}
-
-document.getElementById("result").style.display="block";
-
-const estimated=Math.min(Math.round(selectedBudget*.37),selectedBudget);
-document.getElementById("totalPrice").textContent=estimated.toLocaleString("de-DE")+" €";
-
-document.getElementById("resultImage").innerHTML=`
-<div>
-<strong>${brand} ${model}</strong>
-<span>${year ? "Baujahr "+year+" · " : ""}Deine KI-Vorschau wird hier später erstellt.</span>
-</div>`;
-
-document.getElementById("result").scrollIntoView({behavior:"smooth"});
-}
-
-function showSaved(){
-alert("Gespeicherte Builds kommen in einer späteren Version.");
-}
+const input=document.getElementById('budgetInput'),range=document.getElementById('budgetRange'),display=document.getElementById('budgetDisplay'),list=document.getElementById('quickList'),suggest=document.getElementById('suggest'),suggestBtn=document.getElementById('suggestButton');let budget=2000;
+const amounts=[1,50,100,150,200,250,300,400,500,600,750,1000,1250,1500,1750,2000,2250,2500,3000,3500,4000,4500,5000,6000,7000,8000,9000,10000];
+function euro(n){return Number(n).toLocaleString('de-DE')+' €'}
+function setBudget(n){n=Math.round(Number(n));if(!Number.isFinite(n))return;n=Math.max(1,Math.min(10000,n));budget=n;input.value=n;range.value=n;display.textContent=euro(n);document.querySelectorAll('.quick').forEach(b=>b.classList.toggle('active',+b.dataset.v===n));suggest.style.display=amounts.includes(n)?'none':'block';suggestBtn.textContent='✓ '+euro(n)+' als Budget auswählen'}
+amounts.forEach(n=>{let b=document.createElement('button');b.className='quick';b.dataset.v=n;b.textContent=euro(n);b.onclick=()=>setBudget(n);list.appendChild(b)});
+input.oninput=()=>{let n=+input.value;if(n>=1&&n<=10000)setBudget(n)};document.getElementById('setBudget').onclick=()=>setBudget(input.value);suggestBtn.onclick=()=>{setBudget(input.value);document.getElementById('status').textContent='Budget '+euro(budget)+' ausgewählt.'};range.oninput=()=>setBudget(range.value);
+document.getElementById('photoInput').onchange=function(){let f=this.files[0];if(!f)return;let p=document.getElementById('photoPreview');p.src=URL.createObjectURL(f);p.style.display='block'};
+document.getElementById('build').onclick=()=>{let brand=document.getElementById('brand').value||'Marke nicht angegeben',model=document.getElementById('model').value.trim()||'Modell nicht angegeben',year=document.getElementById('year').value.trim()||'Baujahr nicht angegeben',changes=document.getElementById('changes').value.trim()||'Keine Änderungen angegeben';document.getElementById('sumCar').textContent=brand+' '+model+' · '+year;document.getElementById('sumBudget').textContent=euro(budget);document.getElementById('sumChanges').textContent=changes;let total=[...document.querySelectorAll('.price')].reduce((s,e)=>s+(+e.dataset.price||0),0);document.getElementById('total').textContent=euro(total);document.getElementById('status').textContent='✓ Build wurde erstellt.';let r=document.getElementById('result');r.style.display='block';setTimeout(()=>r.scrollIntoView({behavior:'smooth'}),100)};
+setBudget(2000);
 </script>
 </body>
 </html>
